@@ -1,7 +1,7 @@
 from typing import Dict, List, Optional
 from pydantic import BaseModel
 from domain.type import BrokerType, TimeUnit
-from infra.persistance.model import Interval, StockInfo
+from infra.persistance.schemas.strategy import Interval, StockInfo
 from infra.persistance.schemas.strategy import Strategy
 from infra.persistance.schemas.account import Account
 

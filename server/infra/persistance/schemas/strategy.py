@@ -1,6 +1,5 @@
 from sqlalchemy import JSON, TypeDecorator
 from domain.type import TimeUnit
-from infra.persistance.model import Interval, StockInfo
 from infra.persistance.schemas.base import BaseEntity
 from sqlalchemy.orm import Mapped, mapped_column
 from sqlalchemy.dialects import sqlite
