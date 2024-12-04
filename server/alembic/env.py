@@ -4,7 +4,9 @@ from logging.config import fileConfig
 from sqlalchemy import engine_from_config, pool
 from alembic import context
 
-from infra.persistance.schemas.account import BaseEntity
+from infra.persistance.schemas.account import Account
+from infra.persistance.schemas.base import Base
+from infra.persistance.schemas.strategy import Strategy
 
 current_path = os.path.dirname(os.path.abspath(__file__))
 root_path = os.path.join(current_path, "..")
@@ -23,7 +25,7 @@ if config.config_file_name is not None:
 # for 'autogenerate' support
 # from myapp import mymodel
 # target_metadata = mymodel.Base.metadata
-target_metadata = BaseEntity.metadata
+target_metadata = Base.metadata
 
 
 # other values from the config, defined by the needs of env.py,
