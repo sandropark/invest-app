@@ -24,3 +24,8 @@ class TimeUnit(Enum):
     WEEK = "WEEK"
     MONTH = "MONTH"
     YEAR = "YEAR"
+
+
+class BrokerType(Enum):
+    KIS = "KIS"  # 한국투자증권
+    UPBIT = "UPBIT"  # 업비트

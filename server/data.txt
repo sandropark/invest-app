@@ -1,0 +1,5 @@
+정적자산배분	0.7	R	[{"code": "spy", "target_rate": 0.1, "rebalance_amt": null}]
+
+                            app                                     secret
+한투 실제	64195163	01	PSnAk440vkmWz4MfipvFPOGtSzCGyh5yAv0n	op4HOHjlIWNxeYNAAhHg2wHZGmhjEcPNdYt2jseJfZNPD2f8DLwfpIL48hm4X6QpgH12egbWlPAAsauQDv+2KzCIULnbS4mcRld/Z/xSGI56xbAKlUe1KZhjsAKJbmfUJ+0XP2+N0BAOoft6pRvX0k0AFfBrRINZqFc0Sr7UGrAZwOfM0hk=	https://openapi.koreainvestment.com:9443
+한투 가상	50121373	01	PS2H29xvpC5yqcImQ7KeM6Y4pKbTaE7vd18w	F4CEUOt62y/sUbtm+OxAgZjWfoO7fpadhBfnaY7/nEdNQtFiuhyDUu+VEDN8UHDug0lKs8xFTjDQNz97ct0dms512jsTENp/z8pB/jjA39TQ1dSsfoEq/KvxdeJR5TDUSGEPdOMS7QQmSRVCaBMgH7XQxaWq7J4h6ytYaNsQyXS+HExxZik=	https://openapi.koreainvestment.com:29443

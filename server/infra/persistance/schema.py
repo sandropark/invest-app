@@ -1,29 +1,28 @@
-from typing import List
-from sqlalchemy import JSON, TypeDecorator
+from typing import Dict, List
+from sqlalchemy import JSON, String, TypeDecorator
 from sqlalchemy.ext.declarative import declarative_base
 from domain.stock_info import StockInfo
-from infra.persistance import engine
 from sqlalchemy import func
 from sqlalchemy.dialects import sqlite
 from sqlalchemy.orm import Mapped, mapped_column
+from domain.type import BrokerType
 from infra.persistance.model import Interval
-from enum import Enum
 
 
 Base = declarative_base()
 
 
-class StockInfoList(TypeDecorator):
+class StockInfoDict(TypeDecorator):
     impl = JSON
 
     def process_bind_param(self, value, dialect):
         if value is not None:
-            return [stock.to_dict() for stock in value]
+            return {k: v.to_dict() for k, v in value.items()}
         return None
 
     def process_result_value(self, value, dialect):
         if value is not None:
-            return [StockInfo(**stock) for stock in value]
+            return {k: StockInfo(**v) for k, v in value.items()}
         return None
 
 
@@ -39,6 +38,24 @@ class IntervalType(TypeDecorator):
         if value is not None:
             return Interval(**value)
         return None
+
+
+class EnumType(TypeDecorator):
+    impl = String
+
+    def __init__(self, enum_class):
+        super().__init__()
+        self.enum_class = enum_class
+
+    def process_bind_param(self, value, dialect):
+        if value is None:
+            return None
+        return value.value  # Enum의 값을 문자열로 저장
+
+    def process_result_value(self, value, dialect):
+        if value is None:
+            return None
+        return self.enum_class(value)  # 문자열을 다시 Enum으로 변환
 
 
 class BaseEntity(Base):
@@ -58,18 +75,13 @@ class BaseEntity(Base):
 
 
 class Strategy(BaseEntity):
-    __tablename__ = "starategy"
+    __tablename__ = "strategy"
     name: Mapped[str] = mapped_column(sqlite.VARCHAR(30), index=True)
     invest_rate: Mapped[float] = mapped_column(sqlite.FLOAT)
     env: Mapped[str] = mapped_column(sqlite.CHAR(1), default="R")
-    stocks: Mapped[List[StockInfo]] = mapped_column(StockInfoList, nullable=True)
+    stocks: Mapped[Dict[str, StockInfo]] = mapped_column(StockInfoDict, nullable=True)
     interval: Mapped[Interval] = mapped_column(IntervalType)
     last_run: Mapped[str] = mapped_column(sqlite.DATETIME, nullable=True)
-
-
-class BrokerType(Enum):
-    KIS = "kis"  # 한국투자증권
-    UPBIT = "upbit"  # 업비트
 
 
 class Account(BaseEntity):
@@ -82,7 +94,4 @@ class Account(BaseEntity):
     secret_key: Mapped[str] = mapped_column(sqlite.VARCHAR(100))
     url_base: Mapped[str] = mapped_column(sqlite.VARCHAR(100))
     token: Mapped[str] = mapped_column(sqlite.VARCHAR(200), nullable=True)
-    broker_type: Mapped[str] = mapped_column(sqlite.CHAR(10))
-
-
-Base.metadata.create_all(bind=engine.engine)
+    broker_type: Mapped[BrokerType] = mapped_column(EnumType(BrokerType))

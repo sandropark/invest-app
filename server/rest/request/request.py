@@ -1,19 +1,17 @@
-from typing import List, Optional
+from typing import Dict, List, Optional
 from pydantic import BaseModel
-from domain.type import TimeUnit
+from domain.type import BrokerType, TimeUnit
 from infra.persistance.model import Interval
 from infra.persistance.schema import Account, Strategy
 from domain.stock_info import StockInfo
 
 
 class StockInfoReq(BaseModel):
-    code: str
     target_rate: Optional[float] = None
     rebalance_amt: Optional[int] = None
 
     def toDomain(self) -> StockInfo:
         return StockInfo(
-            code=self.code,
             target_rate=self.target_rate,
             rebalance_amt=self.rebalance_amt,
         )
@@ -34,7 +32,7 @@ class StrategyCreateReq(BaseModel):
     name: str
     invest_rate: Optional[float] = None
     env: Optional[str] = None
-    stocks: list[StockInfoReq]
+    stocks: Dict[str, StockInfoReq]
     interval: Optional[IntervalReq] = None
 
     def toDomain(self) -> Strategy:
@@ -42,7 +40,7 @@ class StrategyCreateReq(BaseModel):
             name=self.name,
             invest_rate=self.invest_rate,
             env=self.env,
-            stocks=[stock.toDomain() for stock in self.stocks],
+            stocks={k: v.toDomain() for k, v in self.stocks.items()},
             interval=self.interval.toDomain(),
         )
 
@@ -55,6 +53,7 @@ class AccountCreateReq(BaseModel):
     secret_key: str
     url_base: str
     token: Optional[str] = None
+    broker_type: BrokerType
 
     def toDomain(self) -> Account:
         return Account(
@@ -65,4 +64,5 @@ class AccountCreateReq(BaseModel):
             secret_key=self.secret_key,
             url_base=self.url_base,
             token=self.token,
+            broker_type=self.broker_type,
         )
