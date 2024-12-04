@@ -1,4 +1,4 @@
-from infra.persistance.schema import Account, Strategy
+from infra.persistance.schemas.account import Account, Strategy
 
 
 def rebalance(strategy: Strategy, account: Account):

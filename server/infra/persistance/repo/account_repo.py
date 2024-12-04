@@ -1,7 +1,7 @@
 from typing import List
 from contextlib import contextmanager
 from infra.persistance import engine
-from infra.persistance.schema import Account
+from infra.persistance.schemas.account import Account
 
 
 @contextmanager

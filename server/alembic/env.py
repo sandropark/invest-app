@@ -4,7 +4,7 @@ from logging.config import fileConfig
 from sqlalchemy import engine_from_config, pool
 from alembic import context
 
-from infra.persistance.schema import BaseEntity
+from infra.persistance.schemas.account import BaseEntity
 
 current_path = os.path.dirname(os.path.abspath(__file__))
 root_path = os.path.join(current_path, "..")

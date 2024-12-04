@@ -1,9 +1,9 @@
 from typing import Dict, List, Optional
 from pydantic import BaseModel
 from domain.type import BrokerType, TimeUnit
-from infra.persistance.model import Interval
-from infra.persistance.schema import Account, Strategy
-from domain.stock_info import StockInfo
+from infra.persistance.model import Interval, StockInfo
+from infra.persistance.schemas.strategy import Strategy
+from infra.persistance.schemas.account import Account
 
 
 class StockInfoReq(BaseModel):

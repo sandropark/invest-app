@@ -1,7 +1,7 @@
 from typing import List
 from contextlib import contextmanager
 from infra.persistance import engine
-from infra.persistance.schema import Strategy
+from infra.persistance.schemas.strategy import Strategy
 
 
 @contextmanager
