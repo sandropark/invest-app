@@ -33,7 +33,7 @@ class KisAccount(Account):
     def get_balance(self) -> float:
         kis_account: KisAccount = self.kis.account()
         kis_balance: KisBalance = kis_account.balance()
-        return kis_balance.total
+        return kis_balance.withdrawable
 
 
 class KISRealAccount(KisAccount):
@@ -53,25 +53,3 @@ class UpbitAccount(Account):
 
     def get_balance(self) -> float:
         return self.upbit.get_balance()
-
-
-class AccountHoler:
-    kis_real = None
-    kis_virtual = None
-    upbit = None
-
-    def get_account(account: AccountEntity) -> Account:
-        if account.broker_type == BrokerType.KIS_R:
-            if AccountHoler.kis_real is None:
-                AccountHoler.kis_real = KISRealAccount(account)
-            return AccountHoler.kis_real
-        elif account.broker_type == BrokerType.KIS_V:
-            if AccountHoler.kis_virtual is None:
-                AccountHoler.kis_virtual = KISVirtualAccount(account)
-            return AccountHoler.kis_virtual
-        elif account.broker_type == BrokerType.UPBIT_R:
-            if AccountHoler.upbit is None:
-                AccountHoler.upbit = UpbitAccount(account)
-            return AccountHoler.upbit
-        else:
-            raise Exception("지원하지 않는 거래소입니다.")
