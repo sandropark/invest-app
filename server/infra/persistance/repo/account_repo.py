@@ -1,7 +1,7 @@
 from typing import List
 from contextlib import contextmanager
 from infra.persistance import engine
-from infra.persistance.schemas.account import Account
+from infra.persistance.schemas.account import AccountEntity
 
 
 @contextmanager
@@ -13,7 +13,7 @@ def get_db():
         db.close()
 
 
-def save(account: Account) -> Account:
+def save(account: AccountEntity) -> AccountEntity:
     with get_db() as db:
         db.add(account)
         db.commit()
@@ -21,12 +21,12 @@ def save(account: Account) -> Account:
         return account
 
 
-def find_all() -> List[Account]:
+def find_all() -> List[AccountEntity]:
     with get_db() as db:
-        return db.query(Account).all()
+        return db.query(AccountEntity).all()
 
 
-def update(id: int, account: Account) -> Account:
+def update(id: int, account: AccountEntity) -> AccountEntity:
     with get_db() as db:
         update_data = {
             key: value
@@ -34,18 +34,18 @@ def update(id: int, account: Account) -> Account:
             if not key.startswith("_") and key != "id"
         }
 
-        db.query(Account).filter(Account.id == id).update(update_data)
+        db.query(AccountEntity).filter(AccountEntity.id == id).update(update_data)
         db.commit()
 
-        return db.query(Account).get(id)
+        return db.query(AccountEntity).get(id)
 
 
-def get(id: int) -> Account:
+def get(id: int) -> AccountEntity:
     with get_db() as db:
-        return db.query(Account).get(id)
+        return db.query(AccountEntity).get(id)
 
 
 def delete(id: int):
     with get_db() as db:
-        db.query(Account).filter(Account.id == id).delete()
+        db.query(AccountEntity).filter(AccountEntity.id == id).delete()
         db.commit()

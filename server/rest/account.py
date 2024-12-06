@@ -1,5 +1,5 @@
 from fastapi import APIRouter
-from domain import account_client
+from domain.account.account import AccountHoler
 from infra.persistance.repo import account_repo
 from rest.request.request import AccountCreateReq
 
@@ -34,4 +34,4 @@ def delete(id: int):
 @router.get("/{id}/balance")
 def get_balance(id: int):
     account = account_repo.get(id)
-    return account_client.get_balance(account)
+    return AccountHoler.get_account(account).get_balance()

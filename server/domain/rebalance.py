@@ -1,7 +1,7 @@
-from infra.persistance.schemas.account import Account, Strategy
+from infra.persistance.schemas.account import AccountEntity, Strategy
 
 
-def rebalance(strategy: Strategy, account: Account):
+def rebalance(strategy: Strategy, account: AccountEntity):
     # 포트폴리오 할당 금액 (포트 폴리오 비중 * 총 현금)
     #   - Data
     #     - 총 현금 (잔고)

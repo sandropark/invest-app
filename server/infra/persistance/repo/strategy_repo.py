@@ -1,7 +1,7 @@
 from typing import List
 from contextlib import contextmanager
 from infra.persistance import engine
-from infra.persistance.schemas.strategy import Strategy
+from infra.persistance.schemas.strategy import StrategyEntity
 
 
 @contextmanager
@@ -13,7 +13,7 @@ def get_db():
         db.close()
 
 
-def save(strategy: Strategy) -> Strategy:
+def save(strategy: StrategyEntity) -> StrategyEntity:
     with get_db() as db:
         db.add(strategy)
         db.commit()
@@ -21,12 +21,12 @@ def save(strategy: Strategy) -> Strategy:
         return strategy
 
 
-def find_all() -> List[Strategy]:
+def find_all() -> List[StrategyEntity]:
     with get_db() as db:
-        return db.query(Strategy).all()
+        return db.query(StrategyEntity).all()
 
 
-def update(id: int, strategy: Strategy) -> Strategy:
+def update(id: int, strategy: StrategyEntity) -> StrategyEntity:
     with get_db() as db:
         update_data = {
             key: value
@@ -34,18 +34,18 @@ def update(id: int, strategy: Strategy) -> Strategy:
             if not key.startswith("_") and key != "id"
         }
 
-        db.query(Strategy).filter(Strategy.id == id).update(update_data)
+        db.query(StrategyEntity).filter(StrategyEntity.id == id).update(update_data)
         db.commit()
 
-        return db.query(Strategy).get(id)
+        return db.query(StrategyEntity).get(id)
 
 
-def get(id: int) -> Strategy:
+def get(id: int) -> StrategyEntity:
     with get_db() as db:
-        return db.query(Strategy).get(id)
+        return db.query(StrategyEntity).get(id)
 
 
 def delete(id: int):
     with get_db() as db:
-        db.query(Strategy).filter(Strategy.id == id).delete()
+        db.query(StrategyEntity).filter(StrategyEntity.id == id).delete()
         db.commit()

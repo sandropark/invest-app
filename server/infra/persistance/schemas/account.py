@@ -33,7 +33,7 @@ class TokenType(TypeDecorator):
         return None
 
 
-class Account(BaseEntity):
+class AccountEntity(BaseEntity):
     __tablename__ = "account"
     id: Mapped[int] = mapped_column(primary_key=True)
     login_id: Mapped[str] = mapped_column(sqlite.VARCHAR(30))

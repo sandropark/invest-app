@@ -61,7 +61,7 @@ class IntervalType(TypeDecorator):
         return None
 
 
-class Strategy(BaseEntity):
+class StrategyEntity(BaseEntity):
     __tablename__ = "strategy"
     name: Mapped[str] = mapped_column(sqlite.VARCHAR(30), index=True)
     invest_rate: Mapped[float] = mapped_column(sqlite.FLOAT)
