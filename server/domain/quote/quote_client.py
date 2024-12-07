@@ -1,22 +1,21 @@
 import pyupbit
-from pykis import KisQuote, KisStock, PyKis
+import yfinance as yf
+import FinanceDataReader as fdr
+import pykrx
+import pandas_datareader.data as web
+from datetime import datetime
 
 
 def get_current_price(ticker: str):
-    # KRW-BTC, AAPL, QQQ, 005930
-    # 티커에 따라서 어느 거래소를 사용하지 결정.
+    # 숫자 6자리면 한국 주식
+    if ticker.isdigit() and len(ticker) == 6:
+        end = datetime.now()
+        start = end.replace(month=end.month - 1)
+        return web.DataReader(ticker, "naver", start, end)["Close"][-1]
 
+    # KRW-로 시작하면 업비트
     if ticker.startswith("KRW-"):
         return pyupbit.get_current_price(ticker)
 
-    return (
-        PyKis(
-            id="1",
-            appkey="123451234512345123451234512345123456",
-            secretkey="XL7@t2!uoG81CA8qJDM&bK6^24Z0H@EI8czSFAWHL3&g9Om#zp1wQW53GcNCHOtrkI$7k!NWp0ZW98p2oPbWgQLZ&hXL7@t2!uoG81CA8qJDM&bK6^24Z0H@EI8czSFAWHL3&g9Om#zp1wQW53GcNCHOtrkI$7k!NWp0ZW98p2oPbWgQLZ&h",
-            keep_token=True,
-        )
-        .stock(ticker)
-        .quote()
-        .close
-    )
+    # 나머지는 yfinance
+    return yf.Ticker(ticker).history(period="1d").Close[0]
