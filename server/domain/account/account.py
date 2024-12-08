@@ -1,6 +1,8 @@
 from abc import ABC, abstractmethod
 from pykis import KisAccount, KisBalance, PyKis
 from pyupbit import Upbit
+from dataclasses import dataclass, field
+
 from infra.persistance.schemas.account import AccountEntity
 
 
@@ -18,10 +20,16 @@ class Account(ABC):
         pass
 
 
+@dataclass
 class HantuAccount(Account):
-    def __init__(self, account: AccountEntity, is_virtual: bool = False):
-        self.account = account
-        self.kis: PyKis = HantuAccount._create_kis_instance(account, is_virtual)
+    account: AccountEntity
+    kis: PyKis = field(init=False)
+    kis_account: KisAccount = field(init=False)
+    kis_balance: KisBalance = field(init=False)
+    is_virtual: bool = False
+
+    def __post_init__(self) -> None:
+        self.kis = HantuAccount._create_kis_instance(self.account, self.is_virtual)
         self.kis_account = self.kis.account()
         self.kis_balance = self.kis_account.balance()
 
@@ -51,12 +59,12 @@ class HantuAccount(Account):
 
 class HantuRealAccount(HantuAccount):
     def __init__(self, account: AccountEntity):
-        super().__init__(account)
+        super().__init__(account=account)
 
 
 class HantuVirtualAccount(HantuAccount):
     def __init__(self, account: AccountEntity):
-        super().__init__(account, True)
+        super().__init__(account=account, is_virtual=True)
 
 
 class UpbitAccount(Account):
