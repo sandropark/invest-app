@@ -19,3 +19,8 @@ def get_current_price(ticker: str):
 
     # 나머지는 yfinance
     return yf.Ticker(ticker).history(period="1d").Close[0]
+
+
+# TODO : 페이징, 시장 선택 가능
+def get_ticker_list(market: str = "KRX"):
+    return fdr.StockListing(market)["Code"]

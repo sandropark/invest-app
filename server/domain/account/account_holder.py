@@ -4,6 +4,7 @@ from domain.account.account import (
     KISVirtualAccount,
     UpbitAccount,
 )
+from domain.exception import InvestAppException
 from domain.type import BrokerType
 from infra.persistance.schemas.account import AccountEntity
 
@@ -20,13 +21,17 @@ def get_account(account: AccountEntity) -> Account:
         if kis_real is None:
             kis_real = KISRealAccount(account)
         return kis_real
-    elif account.broker_type == BrokerType.KIS_V:
+
+    if account.broker_type == BrokerType.KIS_V:
         if kis_virtual is None:
             kis_virtual = KISVirtualAccount(account)
         return kis_virtual
-    elif account.broker_type == BrokerType.UPBIT_R:
+
+    if account.broker_type == BrokerType.UPBIT_R:
         if upbit is None:
             upbit = UpbitAccount(account)
         return upbit
-    else:
-        raise Exception("지원하지 않는 거래소입니다.")
+
+    raise InvestAppException(
+        "지원하지 않는 계좌 종류입니다. {}", 400, account.broker_type
+    )

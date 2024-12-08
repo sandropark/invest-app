@@ -1,7 +1,7 @@
 from abc import ABC, abstractmethod
 from pykis import KisAccount, KisBalance, PyKis
 from pyupbit import Upbit
-from domain.type import BrokerType
+from domain.exception import InvestAppException
 from infra.persistance.schemas.account import AccountEntity
 
 
@@ -52,4 +52,4 @@ class UpbitAccount(Account):
         self.upbit: Upbit = Upbit(access=account.app_key, secret=account.secret_key)
 
     def get_balance(self) -> float:
-        return self.upbit.get_balance()
+        return self.upbit.get_balance_t()

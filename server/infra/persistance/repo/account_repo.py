@@ -1,5 +1,6 @@
 from typing import List
 from contextlib import contextmanager
+from domain.exception import InvestAppException
 from infra.persistance import engine
 from infra.persistance.schemas.account import AccountEntity
 
@@ -42,7 +43,10 @@ def update(id: int, account: AccountEntity) -> AccountEntity:
 
 def get(id: int) -> AccountEntity:
     with get_db() as db:
-        return db.query(AccountEntity).get(id)
+        account = db.query(AccountEntity).get(id)
+        if account is None:
+            raise InvestAppException("계좌가 존재하지 않습니다. id={}", 400, id)
+        return account
 
 
 def delete(id: int):

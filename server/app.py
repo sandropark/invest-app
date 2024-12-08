@@ -1,5 +1,5 @@
 from fastapi import FastAPI
-from rest import quote, strategy, account
+from rest import stock, strategy, account
 
 
 def create_app():
@@ -7,6 +7,6 @@ def create_app():
 
     app.include_router(strategy.router)
     app.include_router(account.router)
-    app.include_router(quote.router)
+    app.include_router(stock.router)
 
     return app
