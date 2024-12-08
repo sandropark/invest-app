@@ -1,7 +1,6 @@
 from abc import ABC, abstractmethod
 from pykis import KisAccount, KisBalance, PyKis
 from pyupbit import Upbit
-from domain.exception import InvestAppException
 from infra.persistance.schemas.account import AccountEntity
 
 
@@ -10,11 +9,21 @@ class Account(ABC):
     def get_balance(self) -> float:
         pass
 
+    @abstractmethod
+    def buy_market_order(self, ticker: str, amount: float) -> None:
+        pass
 
-class KisAccount(Account):
+    @abstractmethod
+    def get_stocks(self):
+        pass
+
+
+class HantuAccount(Account):
     def __init__(self, account: AccountEntity, is_virtual: bool = False):
         self.account = account
-        self.kis: PyKis = KisAccount._create_kis_instance(account, is_virtual)
+        self.kis: PyKis = HantuAccount._create_kis_instance(account, is_virtual)
+        self.kis_account = self.kis.account()
+        self.kis_balance = self.kis_account.balance()
 
     def _create_kis_instance(account: AccountEntity, is_virtual: bool = False) -> PyKis:
         return PyKis(
@@ -31,17 +40,21 @@ class KisAccount(Account):
         )
 
     def get_balance(self) -> float:
-        kis_account: KisAccount = self.kis.account()
-        kis_balance: KisBalance = kis_account.balance()
-        return kis_balance.withdrawable
+        return self.kis_balance.withdrawable
+
+    def buy_market_order(self, ticker: str, amount: float) -> None:
+        self.kis_account.buy(ticker, amount)
+
+    def get_stocks(self):
+        return self.kis_account.stocks
 
 
-class KISRealAccount(KisAccount):
+class HantuRealAccount(HantuAccount):
     def __init__(self, account: AccountEntity):
         super().__init__(account)
 
 
-class KISVirtualAccount(KisAccount):
+class HantuVirtualAccount(HantuAccount):
     def __init__(self, account: AccountEntity):
         super().__init__(account, True)
 
@@ -53,3 +66,9 @@ class UpbitAccount(Account):
 
     def get_balance(self) -> float:
         return self.upbit.get_balance_t()
+
+    def buy_market_order(self, ticker: str, amount: float) -> None:
+        self.upbit.buy_market_order(ticker, amount)
+
+    def get_stocks(self):
+        return self.upbit.get_balances()

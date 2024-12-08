@@ -1,5 +1,5 @@
 from fastapi import APIRouter
-from domain.account import account_holder
+from domain.account import account_service
 from infra.persistance.repo import account_repo
 from rest.request.request import AccountCreateReq
 
@@ -34,5 +34,14 @@ def delete(id: int):
 
 @router.get("/{id}/balance", summary="잔고 조회")
 def get_balance(id: int):
-    account = account_repo.get(id)
-    return account_holder.get_account(account).get_balance()
+    return account_service.get_balance(account_id=id)
+
+
+@router.post("/{id}/buy", summary="시장가 매수")
+def buy(id: int, ticker: str, amount: float):
+    account_service.buy(account_id=id, ticker=ticker, amt=amount)
+
+
+@router.get("/{id}/stocks", summary="보유 종목 조회")
+def get_stocks(id: int):
+    return account_service.get_stocks(account_id=id)
