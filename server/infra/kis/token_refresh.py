@@ -23,9 +23,10 @@ def get_token(account: AccountEntity) -> str:
     return res.json()["access_token"]
 
 
-def refresh_token():
-    kis_accounts = account_repo.find_all(broker_type=BrokerType.KIS)
-    token = get_token(kis_accounts[0])
-    for kis_account in kis_accounts:
-        kis_account.token = token
-    account_repo.save_all(kis_accounts)
+def refresh_token(id: int):
+    kis_account: AccountEntity = account_repo.get(id)
+    if kis_account.broker_type != BrokerType.KIS:
+        raise InvestAppException(
+            "한투 계좌만 지원합니다. broker_type={}", 400, kis_account.broker_type
+        )
+    kis_account.token = get_token(kis_account)

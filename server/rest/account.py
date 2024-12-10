@@ -48,6 +48,6 @@ def get_stocks(id: int):
     return account_service.get_stocks(account_id=id)
 
 
-@router.post("/refresh-kis-token", summary="한투 토큰 갱신")
-def refresh_kis_token():
-    return refresh_token()
+@router.post("/{id}/refresh-kis-token", summary="한투 토큰 갱신")
+def refresh_kis_token(id: int):
+    return refresh_token(id)
