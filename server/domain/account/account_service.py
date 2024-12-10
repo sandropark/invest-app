@@ -7,6 +7,7 @@ from domain.account.account import (
 from domain.exception import InvestAppException
 from domain.type import BrokerType
 from infra.persistance.repo import account_repo
+from infra.persistance.schemas.account import AccountEntity
 
 
 kis_real = None
@@ -30,21 +31,21 @@ def get_stocks(account_id: int):
 
 
 def _get_account(account_id: int) -> Account:
-    account = account_repo.get(account_id)
+    account: AccountEntity = account_repo.get(account_id)
 
     global kis_real, kis_virtual, upbit
 
-    if account.broker_type == BrokerType.KIS_R:
+    if account.broker_type == BrokerType.KIS and not account.is_virtual:
         if kis_real is None:
             kis_real = HantuRealAccount(account)
         return kis_real
 
-    if account.broker_type == BrokerType.KIS_V:
+    if account.broker_type == BrokerType.KIS and account.is_virtual:
         if kis_virtual is None:
             kis_virtual = HantuVirtualAccount(account)
         return kis_virtual
 
-    if account.broker_type == BrokerType.UPBIT_R:
+    if account.broker_type == BrokerType.UPBIT:
         if upbit is None:
             upbit = UpbitAccount(account)
         return upbit

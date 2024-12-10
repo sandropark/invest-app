@@ -1,8 +1,8 @@
 from abc import ABC, abstractmethod
-from pykis import KisAccount, KisBalance, PyKis
 from pyupbit import Upbit
-from dataclasses import dataclass, field
 
+from infra.kis import kis_client
+from infra.kis.dto import KisInfo
 from infra.persistance.schemas.account import AccountEntity
 
 
@@ -20,41 +20,30 @@ class Account(ABC):
         pass
 
 
-@dataclass
 class HantuAccount(Account):
-    account: AccountEntity
-    kis: PyKis = field(init=False)
-    kis_account: KisAccount = field(init=False)
-    kis_balance: KisBalance = field(init=False)
-    is_virtual: bool = False
-
-    def __post_init__(self) -> None:
-        self.kis = HantuAccount._create_kis_instance(self.account, self.is_virtual)
-        self.kis_account = self.kis.account()
-        self.kis_balance = self.kis_account.balance()
-
-    def _create_kis_instance(account: AccountEntity, is_virtual: bool = False) -> PyKis:
-        return PyKis(
-            id=account.login_id,  # HTS 로그인 ID
-            account=f"{account.number}-{account.product_code}",  # 계좌번호
-            appkey=account.app_key,  # AppKey 36자리
-            secretkey=account.secret_key,  # SecretKey 180자리
-            virtual_id=account.login_id if is_virtual else None,  # 가상 계좌 ID
-            virtual_appkey=account.app_key if is_virtual else None,  # 가상 AppKey
-            virtual_secretkey=(
-                account.secret_key if is_virtual else None
-            ),  # 가상 SecretKey
-            keep_token=True,  # API 접속 토큰 자동 저장
-        )
+    def __init__(self, account: AccountEntity, is_virtual: bool = False):
+        self.account: AccountEntity = account
+        self.is_virtual: bool = is_virtual
 
     def get_balance(self) -> float:
-        return self.kis_balance.withdrawable
+        return kis_client.get_balance(self._kis_info())
 
     def buy_market_order(self, ticker: str, amount: float) -> None:
-        self.kis_account.buy(ticker, amount)
+        pass
 
     def get_stocks(self):
-        return self.kis_account.stocks
+        pass
+
+    def _kis_info(self):
+        return KisInfo(
+            token=self.account.token,
+            app_key=self.account.app_key,
+            secret_key=self.account.secret_key,
+            url_base=self.account.url_base,
+            account_number=self.account.number,
+            product_code=self.account.product_code,
+            is_real=not self.is_virtual,
+        )
 
 
 class HantuRealAccount(HantuAccount):

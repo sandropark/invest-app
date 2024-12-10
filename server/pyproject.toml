@@ -23,7 +23,6 @@ apscheduler = "^3.10.4"
 sqlalchemy = "^2.0.36"
 alembic = "^1.14.0"
 pyupbit = "^0.2.34"
-python-kis = "^2.1.2"
 ipykernel = "^6.29.5"
 
 

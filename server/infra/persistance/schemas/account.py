@@ -16,3 +16,7 @@ class AccountEntity(BaseEntity):
     product_code: Mapped[str] = mapped_column(sqlite.CHAR(2), nullable=True)
     login_id: Mapped[str] = mapped_column(sqlite.VARCHAR(30), nullable=True)
     url_base: Mapped[str] = mapped_column(sqlite.VARCHAR(100), nullable=True)
+    is_virtual: Mapped[bool] = mapped_column(
+        sqlite.BOOLEAN, default=False, nullable=False
+    )
+    token: Mapped[str] = mapped_column(sqlite.VARCHAR(100), nullable=True)

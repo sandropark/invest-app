@@ -1,5 +1,6 @@
 from typing import List
 from contextlib import contextmanager
+from domain.type import BrokerType
 from infra.persistance import engine
 from infra.persistance.schemas.account import AccountEntity
 
@@ -21,9 +22,22 @@ def save(account: AccountEntity) -> AccountEntity:
         return account
 
 
-def find_all() -> List[AccountEntity]:
+def save_all(accounts: List[AccountEntity]) -> List[AccountEntity]:
     with get_db() as db:
-        return db.query(AccountEntity).all()
+        db.add_all(accounts)
+        db.commit()
+        return accounts
+
+
+def find_all(broker_type: BrokerType = None) -> List[AccountEntity]:
+    with get_db() as db:
+        if broker_type is None:
+            return db.query(AccountEntity).all()
+        return (
+            db.query(AccountEntity)
+            .filter(AccountEntity.broker_type == broker_type)
+            .all()
+        )
 
 
 def update(id: int, account: AccountEntity) -> AccountEntity:
