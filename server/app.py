@@ -1,3 +1,4 @@
+import pprint
 from fastapi import FastAPI, Request
 from rest import stock, strategy, account
 from fastapi.responses import JSONResponse
@@ -12,6 +13,7 @@ app.include_router(stock.router)
 
 @app.exception_handler(InvestAppException)
 async def handle(request: Request, exc: InvestAppException):
+    pprint.pprint(exc)
     return JSONResponse(status_code=exc.error_code, content=exc.message)
 
 

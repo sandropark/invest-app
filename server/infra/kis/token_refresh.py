@@ -30,3 +30,11 @@ def refresh_token(id: int):
             "한투 계좌만 지원합니다. broker_type={}", 400, kis_account.broker_type
         )
     kis_account.token = get_token(kis_account)
+    account_repo.save(kis_account)
+
+
+def refresh_token_all():
+    accounts = account_repo.find_all(broker_type=BrokerType.KIS)
+    for account in accounts:
+        account.token = get_token(account)
+        account_repo.save(account)
