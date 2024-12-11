@@ -1,4 +1,4 @@
-import pprint
+from domain.config.logging_config import logger
 from fastapi import FastAPI, Request
 from rest import stock, strategy, account
 from fastapi.responses import JSONResponse
@@ -14,12 +14,13 @@ app.include_router(stock.router)
 
 @app.exception_handler(InvestAppException)
 async def handle(request: Request, exc: InvestAppException):
-    pprint.pprint(exc)
+    logger.error(exc)
     return JSONResponse(status_code=exc.error_code, content=exc.message)
 
 
 @app.exception_handler(AssertionError)
 async def handle(request: Request, exc: AssertionError):
+    logger.error(exc)
     return JSONResponse(status_code=400, content=str(exc))
 
 
