@@ -1,5 +1,5 @@
 from dataclasses import dataclass
-from datetime import datetime
+from datetime import datetime, timedelta
 from sqlalchemy import JSON, TypeDecorator
 from sqlalchemy.dialects import sqlite
 from sqlalchemy.orm import Mapped, mapped_column
@@ -62,7 +62,9 @@ class AccountEntity(BaseEntity):
         return self._get_token_expiration() < datetime.now()
 
     def _get_token_expiration(self) -> datetime:
-        return datetime.strptime(self.token.expiration, "%Y-%m-%d %H:%M:%S")
+        return datetime.strptime(
+            self.token.expiration, "%Y-%m-%d %H:%M:%S"
+        ) - timedelta(hours=12)
 
     def get_access_token(self) -> str:
         return self.token.token

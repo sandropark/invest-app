@@ -1,4 +1,5 @@
 import json
+import pprint
 import requests
 from domain.exception import InvestAppException
 from domain.type import BrokerType
@@ -39,6 +40,7 @@ def refresh_token_all(refresh_force: bool = False):
 
 
 def _refresh_token(account: AccountEntity, refresh_force: bool = False):
-    if refresh_force or account.is_token_expired():
+    if refresh_force or account._is_token_expired():
         account.token = Token.of(get_token(account))
         account_repo.save(account)
+        pprint.pprint(f"토큰 갱신 완료. account_id={account.id}")
