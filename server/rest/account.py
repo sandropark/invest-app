@@ -49,8 +49,8 @@ def get_stocks(id: int):
 
 
 @router.post("/refresh-kis-token", summary="한투 토큰 갱신 (전체)")
-def refresh_kis_token_all():
-    return refresh_token_all()
+def refresh_kis_token_all(refresh_force: bool = False):
+    return refresh_token_all(refresh_force)
 
 
 @router.post("/{id}/refresh-kis-token", summary="한투 토큰 갱신")

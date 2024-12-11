@@ -36,7 +36,7 @@ class HantuAccount(Account):
 
     def _kis_info(self):
         return KisInfo(
-            token=self.account.token,
+            token=self.account.get_access_token(),
             app_key=self.account.app_key,
             secret_key=self.account.secret_key,
             url_base=self.account.url_base,

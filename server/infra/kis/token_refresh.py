@@ -3,7 +3,7 @@ import requests
 from domain.exception import InvestAppException
 from domain.type import BrokerType
 from infra.persistance.repo import account_repo
-from infra.persistance.schemas.account import AccountEntity
+from infra.persistance.schemas.account import AccountEntity, Token
 
 
 def get_token(account: AccountEntity) -> str:
@@ -20,7 +20,7 @@ def get_token(account: AccountEntity) -> str:
     if res.status_code != 200:
         raise InvestAppException("토큰 생성 실패. {}", 500, res.text)
 
-    return res.json()["access_token"]
+    return res.json()
 
 
 def refresh_token(id: int):
@@ -29,12 +29,16 @@ def refresh_token(id: int):
         raise InvestAppException(
             "한투 계좌만 지원합니다. broker_type={}", 400, kis_account.broker_type
         )
-    kis_account.token = get_token(kis_account)
-    account_repo.save(kis_account)
+    _refresh_token(kis_account)
 
 
-def refresh_token_all():
+def refresh_token_all(refresh_force: bool = False):
     accounts = account_repo.find_all(broker_type=BrokerType.KIS)
     for account in accounts:
-        account.token = get_token(account)
+        _refresh_token(account, refresh_force)
+
+
+def _refresh_token(account: AccountEntity, refresh_force: bool = False):
+    if refresh_force or account.is_token_expired():
+        account.token = Token.of(get_token(account))
         account_repo.save(account)
