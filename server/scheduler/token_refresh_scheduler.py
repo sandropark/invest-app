@@ -9,6 +9,7 @@ scheduler = BackgroundScheduler()
 
 @asynccontextmanager
 async def lifespan(app):
+    refresh_token_all()
     scheduler.add_job(refresh_token_all, "interval", hours=12)
     scheduler.start()
     yield

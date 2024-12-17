@@ -16,7 +16,7 @@ upbit = None
 
 
 def get_balance(account_id: int) -> float:
-    account = _get_account(account_id)
+    account: Account = _get_account(account_id)
     return account.get_balance()
 
 
