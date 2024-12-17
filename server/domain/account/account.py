@@ -1,4 +1,6 @@
 from abc import ABC, abstractmethod
+from time import sleep
+import pyupbit
 from pyupbit import Upbit
 
 from infra.kis import kis_client
@@ -62,7 +64,20 @@ class UpbitAccount(Account):
         self.upbit: Upbit = Upbit(access=account.app_key, secret=account.secret_key)
 
     def get_balance(self) -> float:
-        return self.upbit.get_balance_t()
+        stocks = self.upbit.get_balances()
+        total_balance = 0.0
+
+        for stock in stocks:
+            if stock["currency"] == "KRW":
+                total_balance += float(stock["balance"])
+            else:
+                sleep(0.1)
+                current_price = float(
+                    pyupbit.get_current_price(f"KRW-{stock['currency']}")
+                )
+                total_balance += current_price * float(stock["balance"])
+
+        return total_balance
 
     def buy_market_order(self, ticker: str, amount: float) -> None:
         self.upbit.buy_market_order(ticker, amount)
