@@ -8,6 +8,13 @@ from infra.kis.dto import KisInfo
 from infra.persistance.schemas.account import AccountEntity
 
 
+class HoldingsInfo:
+    def __init__(self, name: str, amount: float, avg_price: float):
+        self.name: str = name  # 종목명
+        self.amount: float = amount  # 보유수량
+        self.avg_price: float = avg_price  # 평단가
+
+
 class Account(ABC):
     @abstractmethod
     def get_balance(self) -> float:
@@ -18,7 +25,7 @@ class Account(ABC):
         pass
 
     @abstractmethod
-    def get_stocks(self):
+    def get_stocks(self) -> dict[str, HoldingsInfo]:
         pass
 
 
@@ -33,8 +40,15 @@ class HantuAccount(Account):
     def buy_market_order(self, ticker: str, amount: float) -> None:
         pass
 
-    def get_stocks(self):
-        pass
+    def get_stocks(self) -> dict[str, HoldingsInfo]:
+        return {
+            stock["pdno"]: HoldingsInfo(
+                name=stock["prdt_name"],
+                amount=float(stock["hldg_qty"]),
+                avg_price=float(stock["pchs_avg_pric"]),
+            )
+            for stock in kis_client.get_stocks(self._kis_info())
+        }
 
     def _kis_info(self):
         return KisInfo(
@@ -64,7 +78,7 @@ class UpbitAccount(Account):
         self.upbit: Upbit = Upbit(access=account.app_key, secret=account.secret_key)
 
     def get_balance(self) -> float:
-        stocks = self.upbit.get_balances()
+        stocks: list[dict] = self.upbit.get_balances()
         total_balance = 0.0
 
         for stock in stocks:
@@ -82,5 +96,12 @@ class UpbitAccount(Account):
     def buy_market_order(self, ticker: str, amount: float) -> None:
         self.upbit.buy_market_order(ticker, amount)
 
-    def get_stocks(self):
-        return self.upbit.get_balances()
+    def get_stocks(self) -> dict[str, HoldingsInfo]:
+        return {
+            stock["currency"]: HoldingsInfo(
+                name=stock["currency"],
+                amount=float(stock["balance"]),
+                avg_price=float(stock["avg_buy_price"]),
+            )
+            for stock in self.upbit.get_balances()
+        }

@@ -22,6 +22,18 @@ def make_token(info: KisInfo) -> str:
 
 
 def get_balance(info: KisInfo) -> BalanceResponse:
+    res = _get_balance(info)
+
+    return BalanceResponse.of(res.json()["output2"][0])
+
+
+def get_stocks(info: KisInfo):
+    res = _get_balance(info)
+
+    return res.json()["output1"]
+
+
+def _get_balance(info):
     headers = {
         "Content-Type": "application/json",
         "authorization": f"Bearer {info.token}",
@@ -50,6 +62,6 @@ def get_balance(info: KisInfo) -> BalanceResponse:
     res = requests.get(URL, headers=headers, params=params)
 
     if res.status_code == 200 and res.json()["rt_cd"] == "0":
-        return BalanceResponse.of(res.json()["output2"][0])
+        return res
 
     raise InvestAppException("잔고 조회 실패. {}", 500, res.text)
