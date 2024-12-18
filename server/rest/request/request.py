@@ -31,7 +31,6 @@ class IntervalReq(BaseModel):
 class StrategyCreateReq(BaseModel):
     name: str
     invest_rate: Optional[float] = None
-    env: Optional[str] = None
     stocks: Dict[str, StockInfoReq]
     interval: Optional[IntervalReq] = None
 
@@ -39,7 +38,6 @@ class StrategyCreateReq(BaseModel):
         return StrategyEntity(
             name=self.name,
             invest_rate=self.invest_rate,
-            env=self.env,
             stocks={k: v.toDomain() for k, v in self.stocks.items()},
             interval=self.interval.toDomain(),
         )
