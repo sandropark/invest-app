@@ -27,7 +27,7 @@ def buy(account_id: int, ticker: str, amt: int) -> float:
 
 def get_stocks(account_id: int):
     account = _get_account(account_id)
-    return account.get_stocks()
+    return account.get_holdings()
 
 
 def _get_account(account_id: int) -> Account:

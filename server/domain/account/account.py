@@ -25,7 +25,7 @@ class Account(ABC):
         pass
 
     @abstractmethod
-    def get_stocks(self) -> dict[str, HoldingsInfo]:
+    def get_holdings(self) -> dict[str, HoldingsInfo]:
         pass
 
 
@@ -40,7 +40,7 @@ class HantuAccount(Account):
     def buy_market_order(self, ticker: str, amount: float) -> None:
         pass
 
-    def get_stocks(self) -> dict[str, HoldingsInfo]:
+    def get_holdings(self) -> dict[str, HoldingsInfo]:
         return {
             stock["pdno"]: HoldingsInfo(
                 name=stock["prdt_name"],
@@ -96,7 +96,7 @@ class UpbitAccount(Account):
     def buy_market_order(self, ticker: str, amount: float) -> None:
         self.upbit.buy_market_order(ticker, amount)
 
-    def get_stocks(self) -> dict[str, HoldingsInfo]:
+    def get_holdings(self) -> dict[str, HoldingsInfo]:
         return {
             stock["currency"]: HoldingsInfo(
                 name=stock["currency"],

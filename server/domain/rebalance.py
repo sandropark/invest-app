@@ -1,5 +1,5 @@
 from typing import Dict
-from domain.account.account import Account
+from domain.account.account import Account, HoldingsInfo
 from infra.persistance.schemas.strategy import StockInfo, StrategyEntity
 
 
@@ -18,7 +18,12 @@ def rebalance(strategy: StrategyEntity, account: Account):
     invest_rate: float = strategy.invest_rate
     invest_amount = balance * invest_rate
 
-    # 2. 종목별 비중 계산
+    # 2. 보유 종목 리스트 조회
+    holddings_dict: Dict[str, HoldingsInfo] = account.get_holdings()
+
+    # 3. 종목별 비중 계산
     stocks: Dict[str, StockInfo] = strategy.stocks
+    for ticker, stock in stocks.items():
+        stock.rebalance_amt = invest_amount * stock.target_rate
 
     pass
