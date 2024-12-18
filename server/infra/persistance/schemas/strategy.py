@@ -9,8 +9,8 @@ from typing import Dict, List
 
 class StockInfo:
     def __init__(self, target_rate: float, rebalance_amt: int = 0):
-        self.target_rate: float = target_rate
-        self.rebalance_amt: int = rebalance_amt
+        self.target_rate: float = target_rate  # 목표 비중
+        self.rebalance_amt: int = rebalance_amt  # 리밸런스 수량
 
     def to_dict(self):
         return {
