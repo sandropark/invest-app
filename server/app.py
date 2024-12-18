@@ -3,9 +3,9 @@ from fastapi import FastAPI, Request
 from rest import stock, strategy, account
 from fastapi.responses import JSONResponse
 from domain.exception import InvestAppException
-from scheduler import token_refresh_scheduler
+from scheduler import scheduler
 
-app = FastAPI(lifespan=token_refresh_scheduler.lifespan)
+app = FastAPI(lifespan=scheduler.lifespan)
 
 app.include_router(strategy.router)
 app.include_router(account.router)
@@ -22,6 +22,12 @@ async def handle(request: Request, exc: InvestAppException):
 async def handle(request: Request, exc: AssertionError):
     logger.error(exc)
     return JSONResponse(status_code=400, content=str(exc))
+
+
+@app.exception_handler(Exception)
+async def handle(request: Request, exc: Exception):
+    logger.error(exc)
+    return JSONResponse(status_code=500, content=str(exc))
 
 
 def create_app():

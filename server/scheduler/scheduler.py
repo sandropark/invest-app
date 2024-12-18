@@ -1,7 +1,7 @@
 from contextlib import asynccontextmanager
 from apscheduler.schedulers.background import BackgroundScheduler
 
-from infra.kis.token_refresh import refresh_token_all
+import infra.kis.token_refresher as token_refresher
 
 
 scheduler = BackgroundScheduler()
@@ -9,8 +9,8 @@ scheduler = BackgroundScheduler()
 
 @asynccontextmanager
 async def lifespan(app):
-    refresh_token_all()
-    scheduler.add_job(refresh_token_all, "interval", hours=12)
+    token_refresher.refresh_token_all()
+    scheduler.add_job(token_refresher.refresh_token_all, "interval", hours=12)
     scheduler.start()
     yield
     scheduler.shutdown()
