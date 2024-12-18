@@ -2,6 +2,7 @@ from typing import List
 from contextlib import contextmanager
 from infra.persistance import engine
 from infra.persistance.schemas.strategy import StrategyEntity
+from sqlalchemy.orm import joinedload
 
 
 @contextmanager
@@ -42,7 +43,9 @@ def update(id: int, strategy: StrategyEntity) -> StrategyEntity:
 
 def get(id: int) -> StrategyEntity:
     with get_db() as db:
-        return db.query(StrategyEntity).get(id)
+        return (
+            db.query(StrategyEntity).options(joinedload(StrategyEntity.account)).get(id)
+        )
 
 
 def delete(id: int):
