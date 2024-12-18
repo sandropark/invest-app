@@ -1,7 +1,8 @@
-from sqlalchemy import JSON, TypeDecorator
+from sqlalchemy import JSON, ForeignKey, TypeDecorator
 from domain.type import TimeUnit
+from infra.persistance.schemas.account import AccountEntity
 from infra.persistance.schemas.base import BaseEntity
-from sqlalchemy.orm import Mapped, mapped_column
+from sqlalchemy.orm import Mapped, mapped_column, relationship
 from sqlalchemy.dialects import sqlite
 from typing import Dict, List
 
@@ -68,3 +69,5 @@ class StrategyEntity(BaseEntity):
     stocks: Mapped[Dict[str, StockInfo]] = mapped_column(StockInfoDict, nullable=True)
     interval: Mapped[Interval] = mapped_column(IntervalType)
     last_run: Mapped[str] = mapped_column(sqlite.DATETIME, nullable=True)
+    account_id: Mapped[int] = mapped_column(ForeignKey("account.id"))
+    account: Mapped[AccountEntity] = relationship()

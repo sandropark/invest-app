@@ -33,6 +33,7 @@ class StrategyCreateReq(BaseModel):
     invest_rate: Optional[float] = None
     stocks: Dict[str, StockInfoReq]
     interval: Optional[IntervalReq] = None
+    account_id: int
 
     def toDomain(self) -> StrategyEntity:
         return StrategyEntity(
@@ -40,6 +41,7 @@ class StrategyCreateReq(BaseModel):
             invest_rate=self.invest_rate,
             stocks={k: v.toDomain() for k, v in self.stocks.items()},
             interval=self.interval.toDomain(),
+            account_id=self.account_id,
         )
 
 
