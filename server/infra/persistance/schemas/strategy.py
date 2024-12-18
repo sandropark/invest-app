@@ -65,7 +65,6 @@ class StrategyEntity(BaseEntity):
     __tablename__ = "strategy"
     name: Mapped[str] = mapped_column(sqlite.VARCHAR(30), index=True)
     invest_rate: Mapped[float] = mapped_column(sqlite.FLOAT)
-    env: Mapped[str] = mapped_column(sqlite.CHAR(1), default="R")
     stocks: Mapped[Dict[str, StockInfo]] = mapped_column(StockInfoDict, nullable=True)
     interval: Mapped[Interval] = mapped_column(IntervalType)
     last_run: Mapped[str] = mapped_column(sqlite.DATETIME, nullable=True)
