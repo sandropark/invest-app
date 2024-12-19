@@ -94,9 +94,7 @@ class UpbitAccount(Account):
                 total_balance += float(stock["balance"])
             else:
                 sleep(0.1)
-                current_price = float(
-                    pyupbit.get_current_price(f"KRW-{stock['currency']}")
-                )
+                current_price = float(pyupbit.get_current_price(f"KRW-{stock['currency']}"))
                 total_balance += current_price * float(stock["balance"])
 
         return total_balance

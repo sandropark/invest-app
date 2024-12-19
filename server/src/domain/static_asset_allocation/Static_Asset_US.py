@@ -18,10 +18,12 @@ https://blog.naver.com/zacra/223086628069
   
 """
 from domain.helper import KIS_Common as common
-from domain import chat_client, kis_util
+from domain import chat_client
 import time
 import json
 import pprint
+
+from src.domain.static_asset_allocation import kis_util
 
 
 # 1. 포트폴리오 이름

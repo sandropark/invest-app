@@ -11,8 +11,8 @@ from typing import Sequence, Union
 from alembic import op
 import sqlalchemy as sa
 
-from domain.type import Market
-from infra.persistance.schemas.base import EnumType
+from src.domain.type import Market
+from src.infra.persistance.schemas.base import EnumType
 
 
 # revision identifiers, used by Alembic.
@@ -24,9 +24,7 @@ depends_on: Union[str, Sequence[str], None] = None
 
 def upgrade() -> None:
     with op.batch_alter_table("strategy") as batch_op:
-        batch_op.add_column(
-            sa.Column("market", EnumType(Market), nullable=False, server_default="KR")
-        )
+        batch_op.add_column(sa.Column("market", EnumType(Market), nullable=False, server_default="KR"))
 
 
 def downgrade() -> None:

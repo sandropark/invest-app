@@ -1,22 +1,12 @@
 from sqlalchemy import JSON, ForeignKey, TypeDecorator
+from src.domain.account.account import HoldingsInfo
+from src.domain.stock.stock import StockInfo
 from src.domain.type import Market, TimeUnit
 from src.infra.persistance.schemas.account import AccountEntity
 from src.infra.persistance.schemas.base import BaseEntity, EnumType
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 from sqlalchemy.dialects import sqlite
 from typing import Dict, List
-
-
-class StockInfo:
-    def __init__(self, target_rate: float, rebalance_amt: int = 0):
-        self.target_rate: float = target_rate  # 목표 비중
-        self.rebalance_amt: int = rebalance_amt  # 리밸런스 수량
-
-    def to_dict(self):
-        return {
-            "target_rate": self.target_rate,
-            "rebalance_amt": self.rebalance_amt,
-        }
 
 
 class Interval:

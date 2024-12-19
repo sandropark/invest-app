@@ -16,10 +16,12 @@ https://blog.naver.com/zacra/223203988739
 https://blog.naver.com/zacra/223086628069  
 """
 from domain.helper import KIS_Common as common
-from domain import chat_client, kis_util
+from domain import chat_client
 import time
 import json
 import pprint
+
+from src.domain.static_asset_allocation import kis_util
 
 
 # 전제는 크롭탭에 주말 빼고 우리나라 시간 아침10시 정각에 해당 봇이 돈다고 가정!

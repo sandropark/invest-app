@@ -1,5 +1,4 @@
 from src.domain.account import account_service
-from src.domain.type import Market
 
 
 def test_get_current_price_1():

@@ -15,9 +15,7 @@ def rebalance(strategy: Strategy, account: Account):
     # 매수
 
     balance: float = account.get_balance()
-    invest_amount = strategy.get_invest_amount(
-        balance
-    )  # 포트폴리오 할당 금액 (포트 폴리오 비중 * 총 현금)
+    invest_amount = strategy.get_invest_amount(balance)  # 포트폴리오 할당 금액 (포트 폴리오 비중 * 총 현금)
 
     # 2. 보유 종목 리스트 조회
     holddings_dict: Dict[str, HoldingsInfo] = account.get_holdings()
@@ -25,14 +23,5 @@ def rebalance(strategy: Strategy, account: Account):
     # 3. 종목별 비중 계산
     stocks: Dict[str, StockInfo] = strategy.stocks
     for ticker, stock in stocks.items():
-
-        current_price = account.get_current_price(ticker)
-        holdings = holddings_dict[ticker]
-
-        if holdings is None:
-            stock.rebalance_amt = (
-                invest_amount * stock.target_rate / current_price
-            )  # 리밸런스 수량
-            continue
-
+        stock.calculate_rebalance_amount(invest_amount, holddings_dict.get(ticker), account.get_current_pric(ticker))
     pass
