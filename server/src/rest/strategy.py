@@ -1,6 +1,6 @@
 from fastapi import APIRouter
-from infra.persistance.repo import strategy_repo
-from rest.request.request import StrategyCreateReq
+from src.infra.persistance.repo import strategy_repo
+from src.rest.request.request import StrategyCreateReq
 
 router = APIRouter(prefix="/strategies", tags=["strategy"])
 

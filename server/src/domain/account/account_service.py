@@ -1,13 +1,13 @@
-from domain.account.account import (
+from src.domain.account.account import (
     Account,
     HantuRealAccount,
     HantuVirtualAccount,
     UpbitAccount,
 )
-from domain.exception import InvestAppException
-from domain.type import BrokerType
-from infra.persistance.repo import account_repo
-from infra.persistance.schemas.account import AccountEntity
+from src.domain.exception import InvestAppException
+from src.domain.type import BrokerType, Market
+from src.infra.persistance.repo import account_repo
+from src.infra.persistance.schemas.account import AccountEntity
 
 
 kis_real = None
@@ -15,9 +15,9 @@ kis_virtual = None
 upbit = None
 
 
-def get_balance(account_id: int) -> float:
+def get_balance(account_id: int, market: Market = Market.KR) -> float:
     account: Account = _get_account(account_id)
-    return account.get_balance()
+    return account.get_balance(market)
 
 
 def buy(account_id: int, ticker: str, amt: int) -> float:

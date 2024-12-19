@@ -1,7 +1,7 @@
 from typing import List
 from contextlib import contextmanager
-from infra.persistance import engine
-from infra.persistance.schemas.strategy import StrategyEntity
+from src.infra.persistance import engine
+from src.infra.persistance.schemas.strategy import StrategyEntity
 from sqlalchemy.orm import joinedload
 
 

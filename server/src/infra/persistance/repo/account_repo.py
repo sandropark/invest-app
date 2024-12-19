@@ -1,8 +1,8 @@
 from typing import List
 from contextlib import contextmanager
-from domain.type import BrokerType
-from infra.persistance import engine
-from infra.persistance.schemas.account import AccountEntity
+from src.domain.type import BrokerType
+from src.infra.persistance import engine
+from src.infra.persistance.schemas.account import AccountEntity
 
 
 @contextmanager

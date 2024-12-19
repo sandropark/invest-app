@@ -1,7 +1,7 @@
 from sqlalchemy import JSON, ForeignKey, TypeDecorator
-from domain.type import Market, TimeUnit
-from infra.persistance.schemas.account import AccountEntity
-from infra.persistance.schemas.base import BaseEntity, EnumType
+from src.domain.type import Market, TimeUnit
+from src.infra.persistance.schemas.account import AccountEntity
+from src.infra.persistance.schemas.base import BaseEntity, EnumType
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 from sqlalchemy.dialects import sqlite
 from typing import Dict, List

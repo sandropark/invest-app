@@ -1,6 +1,6 @@
 from fastapi import APIRouter
 
-from domain.stock import stock_client
+from src.domain.stock import stock_client
 
 
 router = APIRouter(prefix="/stocks", tags=["stocks"])

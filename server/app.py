@@ -1,9 +1,9 @@
-from domain.config.logging_config import logger
+from src.domain.config.logging_config import logger
 from fastapi import FastAPI, Request
-from rest import stock, strategy, account
+from src.rest import stock, strategy, account
 from fastapi.responses import JSONResponse
-from domain.exception import InvestAppException
-from scheduler import scheduler
+from src.domain.exception import InvestAppException
+from src.scheduler import scheduler
 
 app = FastAPI(lifespan=scheduler.lifespan)
 

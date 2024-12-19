@@ -3,9 +3,10 @@ from time import sleep
 import pyupbit
 from pyupbit import Upbit
 
-from infra.kis import kis_client
-from infra.kis.dto import KisInfo
-from infra.persistance.schemas.account import AccountEntity
+from src.infra.kis import kis_client
+from src.infra.kis.dto import KisInfo
+from src.infra.persistance.schemas.account import AccountEntity
+from src.domain.type import Market
 
 
 class HoldingsInfo:
@@ -17,7 +18,7 @@ class HoldingsInfo:
 
 class Account(ABC):
     @abstractmethod
-    def get_balance(self) -> float:
+    def get_balance(self, market: Market = Market.KR) -> float:
         pass
 
     @abstractmethod
@@ -38,8 +39,8 @@ class HantuAccount(Account):
         self.account: AccountEntity = account
         self.is_virtual: bool = is_virtual
 
-    def get_balance(self) -> float:
-        return kis_client.get_balance(self._kis_info())
+    def get_balance(self, market: Market = Market.KR) -> float:
+        return kis_client.get_balance(self._kis_info(), market)
 
     def buy_market_order(self, ticker: str, amount: float) -> None:
         pass
@@ -84,7 +85,7 @@ class UpbitAccount(Account):
         self.account = account
         self.upbit: Upbit = Upbit(access=account.app_key, secret=account.secret_key)
 
-    def get_balance(self) -> float:
+    def get_balance(self, market: Market = Market.KR) -> float:
         stocks: list[dict] = self.upbit.get_balances()
         total_balance = 0.0
 

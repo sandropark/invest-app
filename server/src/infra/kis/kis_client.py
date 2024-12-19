@@ -1,8 +1,10 @@
 import json
 import requests
-from domain.exception import InvestAppException
-from infra.kis.dto import BalanceResponse, KisInfo
+from src.domain.exception import InvestAppException
+from src.infra.kis.dto import BalanceResponse, KisInfo
 import yfinance as yf
+
+from src.domain.type import Market
 
 
 def make_token(info: KisInfo) -> str:
@@ -22,19 +24,22 @@ def make_token(info: KisInfo) -> str:
     raise InvestAppException("토큰 생성 실패. {}", 400, res.text)
 
 
-def get_balance(info: KisInfo) -> BalanceResponse:
-    res = _get_balance(info)
+def get_balance(info: KisInfo, market: Market = Market.KR) -> float:
+    if market == Market.KR:
+        return BalanceResponse.of(
+            _get_balance_kr(info).json()["output2"][0]
+        ).total_money
 
-    return BalanceResponse.of(res.json()["output2"][0])
+    return _get_balance_us(info)
 
 
 def get_stocks(info: KisInfo):
-    res = _get_balance(info)
+    res = _get_balance_kr(info)
 
     return res.json()["output1"]
 
 
-def _get_balance(info):
+def _get_balance_kr(info: KisInfo):
     headers = {
         "Content-Type": "application/json",
         "authorization": f"Bearer {info.token}",
@@ -64,6 +69,168 @@ def _get_balance(info):
 
     if res.status_code == 200 and res.json()["rt_cd"] == "0":
         return res
+
+    raise InvestAppException("잔고 조회 실패. {}", 500, res.text)
+
+
+def _get_balance_us(info: KisInfo):
+    URL = f"{info.url_base}/uapi/overseas-stock/v1/trading/inquire-present-balance"
+
+    headers = {
+        "Content-Type": "application/json",
+        "authorization": f"Bearer {info.token}",
+        "appKey": info.app_key,
+        "appSecret": info.secret_key,
+        "tr_id": "CTRP6504R" if info.is_real else "VTRP6504R",
+        "custtype": "P",
+    }
+
+    params = {
+        "CANO": info.account_number,
+        "ACNT_PRDT_CD": info.product_code,
+        "WCRC_FRCR_DVSN_CD": "02",
+        "NATN_CD": "840",
+        "TR_MKET_CD": "00",
+        "INQR_DVSN_CD": "00",
+    }
+
+    res = requests.get(URL, headers=headers, params=params)
+
+    if res.status_code == 200 and res.json()["rt_cd"] == "0":
+        result = res.json()["output2"]
+        return result
+
+        # # 실시간 주식 상태가 반영이 안되서 주식 정보를 직접 읽어서 계산!
+        # my_stock_list = GetMyStockList(st)
+
+        # StockOriMoneyTotal = 0
+        # StockNowMoneyTotal = 0
+
+        # for stock in my_stock_list:
+        #     # pprint.pprint(stock)
+        #     StockOriMoneyTotal += float(stock["StockOriMoney"])
+        #     StockNowMoneyTotal += float(stock["StockNowMoney"])
+
+        #     # print("--", StockNowMoneyTotal, StockOriMoneyTotal)
+
+        # balanceDict = dict()
+        # balanceDict["RemainMoney"] = 0
+
+        # Rate = 1200
+
+        # if st == "USD":
+
+        #     for data in result:
+        #         if data["crcy_cd"] == "USD":
+        #             # 예수금 총금액 (즉 주문가능 금액)
+        #             balanceDict["RemainMoney"] = (
+        #                 float(data["frcr_dncl_amt_2"])
+        #                 - float(data["frcr_buy_amt_smtl"])
+        #                 + float(data["frcr_sll_amt_smtl"])
+        #             )  # 모의계좌는 0으로 나온다 이유는 모르겠음!
+        #             Rate = data["frst_bltn_exrt"]
+        #             break
+
+        #     result = res.json()["output3"]
+
+        #     # 임시로 모의 계좌 잔고가 0으로
+        #     if (
+        #         common.GetNowDist() == "VIRTUAL"
+        #         and float(balanceDict["RemainMoney"]) == 0
+        #     ):
+
+        #         # 주식 총 평가 금액
+        #         balanceDict["stock_money"] = (
+        #             StockNowMoneyTotal  # (float(result['evlu_amt_smtl_amt']) / float(Rate))
+        #         )
+        #         # 평가 손익 금액
+        #         balanceDict["StockRevenue"] = float(StockNowMoneyTotal) - float(
+        #             StockOriMoneyTotal
+        #         )  # round((float(StockNowMoneyTotal)/float(StockOriMoneyTotal) - 1.0) * 100.0,2)
+
+        #         balanceDict["RemainMoney"] = float(result["frcr_evlu_tota"]) / float(
+        #             Rate
+        #         )
+
+        #         # 총 평가 금액
+        #         balanceDict["total_money"] = float(balanceDict["stock_money"]) + float(
+        #             balanceDict["RemainMoney"]
+        #         )
+
+        #     else:
+
+        #         # 주식 총 평가 금액
+        #         balanceDict["stock_money"] = (
+        #             StockNowMoneyTotal  # (float(result['evlu_amt_smtl_amt']) / float(Rate))
+        #         )
+        #         # 평가 손익 금액
+        #         balanceDict["StockRevenue"] = float(StockNowMoneyTotal) - float(
+        #             StockOriMoneyTotal
+        #         )  # round((float(StockNowMoneyTotal)/float(StockOriMoneyTotal) - 1.0) * 100.0,2)
+
+        #         # 총 평가 금액
+        #         balanceDict["total_money"] = float(balanceDict["stock_money"]) + float(
+        #             balanceDict["RemainMoney"]
+        #         )
+
+        # else:
+
+        #     for data in result:
+        #         if data["crcy_cd"] == "USD":
+        #             Rate = data["frst_bltn_exrt"]
+        #             # 예수금 총금액 (즉 주문가능현금)
+        #             balanceDict["RemainMoney"] = (
+        #                 float(data["frcr_dncl_amt_2"])
+        #                 - float(data["frcr_buy_amt_smtl"])
+        #                 + float(data["frcr_sll_amt_smtl"])
+        #             ) * float(Rate)
+        #             # balanceDict['RemainMoney'] = data['frcr_evlu_amt2'] #모의계좌는 0으로 나온다 이유는 모르겠음!
+
+        #             break
+
+        #     # print("balanceDict['RemainMoney'] ", balanceDict['RemainMoney'] )
+
+        #     result = res.json()["output3"]
+
+        #     # 임시로 모의 계좌 잔고가 0으로 나오면
+        #     if (
+        #         common.GetNowDist() == "VIRTUAL"
+        #         and float(balanceDict["RemainMoney"]) == 0
+        #     ):
+
+        #         # 주식 총 평가 금액
+        #         balanceDict["stock_money"] = (
+        #             StockNowMoneyTotal  # result['evlu_amt_smtl_amt']
+        #         )
+        #         # 평가 손익 금액
+        #         balanceDict["StockRevenue"] = float(StockNowMoneyTotal) - float(
+        #             StockOriMoneyTotal
+        #         )  # round((float(StockNowMoneyTotal)/float(StockOriMoneyTotal) - 1.0) * 100.0,2)
+
+        #         balanceDict["RemainMoney"] = float(result["frcr_evlu_tota"])
+
+        #         # 총 평가 금액
+        #         balanceDict["total_money"] = float(balanceDict["stock_money"]) + float(
+        #             balanceDict["RemainMoney"]
+        #         )
+
+        #     else:
+
+        #         # 주식 총 평가 금액
+        #         balanceDict["stock_money"] = (
+        #             StockNowMoneyTotal  # result['evlu_amt_smtl_amt']
+        #         )
+        #         # 평가 손익 금액
+        #         balanceDict["StockRevenue"] = float(StockNowMoneyTotal) - float(
+        #             StockOriMoneyTotal
+        #         )  # round((float(StockNowMoneyTotal)/float(StockOriMoneyTotal) - 1.0) * 100.0,2)
+
+        #         # 총 평가 금액
+        #         balanceDict["total_money"] = float(balanceDict["stock_money"]) + float(
+        #             balanceDict["RemainMoney"]
+        #         )
+
+        # return balanceDict
 
     raise InvestAppException("잔고 조회 실패. {}", 500, res.text)
 

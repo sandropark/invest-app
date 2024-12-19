@@ -3,9 +3,9 @@ from datetime import datetime, timedelta
 from sqlalchemy import JSON, TypeDecorator
 from sqlalchemy.dialects import sqlite
 from sqlalchemy.orm import Mapped, mapped_column
-from domain.type import BrokerType
+from src.domain.type import BrokerType
 
-from infra.persistance.schemas.base import BaseEntity, EnumType
+from src.infra.persistance.schemas.base import BaseEntity, EnumType
 
 
 @dataclass

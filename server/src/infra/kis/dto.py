@@ -33,5 +33,6 @@ class BalanceResponse:
             float(res["dnca_tot_amt"]),
         )
 
-    def of(res: dict):
-        return BalanceResponse(res).total_money
+    @staticmethod
+    def of(res: dict) -> "BalanceResponse":
+        return BalanceResponse(res)
