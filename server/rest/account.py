@@ -56,3 +56,8 @@ def refresh_kis_token_all(refresh_force: bool = False):
 @router.post("/{id}/refresh-kis-token", summary="한투 토큰 갱신")
 def refresh_kis_token(id: int):
     return refresh_token(id)
+
+
+@router.get("/{id}/current-price", summary="현재 가격 조회")
+def get_current_price(id: int, ticker: str):
+    return account_service.get_current_price(account_id=id, ticker=ticker)

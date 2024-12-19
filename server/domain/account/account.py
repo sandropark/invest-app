@@ -28,6 +28,10 @@ class Account(ABC):
     def get_holdings(self) -> dict[str, HoldingsInfo]:
         pass
 
+    @abstractmethod
+    def get_current_price(self, ticker: str) -> float:
+        pass
+
 
 class HantuAccount(Account):
     def __init__(self, account: AccountEntity, is_virtual: bool = False):
@@ -49,6 +53,9 @@ class HantuAccount(Account):
             )
             for stock in kis_client.get_stocks(self._kis_info())
         }
+
+    def get_current_price(self, ticker: str) -> float:
+        return kis_client.get_current_price(self._kis_info(), ticker)
 
     def _kis_info(self):
         return KisInfo(
@@ -105,3 +112,6 @@ class UpbitAccount(Account):
             )
             for stock in self.upbit.get_balances()
         }
+
+    def get_current_price(self, ticker: str) -> float:
+        return pyupbit.get_current_price(ticker)

@@ -2,6 +2,7 @@ import json
 import requests
 from domain.exception import InvestAppException
 from infra.kis.dto import BalanceResponse, KisInfo
+import yfinance as yf
 
 
 def make_token(info: KisInfo) -> str:
@@ -65,3 +66,37 @@ def _get_balance(info):
         return res
 
     raise InvestAppException("잔고 조회 실패. {}", 500, res.text)
+
+
+def get_current_price(info: KisInfo, ticker: str) -> float:
+    if ticker.isdigit():
+        return _get_current_price_kr(info, ticker)
+
+    return _get_current_price_us(ticker)
+
+
+def _get_current_price_kr(info: KisInfo, ticker: str) -> float:
+    URL = f"{info.url_base}/uapi/domestic-stock/v1/quotations/inquire-price"
+
+    headers = {
+        "Content-Type": "application/json",
+        "authorization": f"Bearer {info.token}",
+        "appKey": info.app_key,
+        "appSecret": info.secret_key,
+        "tr_id": "FHKST01010100",
+    }
+
+    params = {"FID_COND_MRKT_DIV_CODE": "J", "FID_INPUT_ISCD": ticker}
+
+    res = requests.get(URL, headers=headers, params=params)
+
+    if res.status_code == 200 and res.json()["rt_cd"] == "0":
+        return int(res.json()["output"]["stck_prpr"])
+
+    raise InvestAppException("현재가 조회 실패. {}", 500, res.text)
+
+
+def _get_current_price_us(ticker: str) -> float:
+    stock = yf.Ticker(ticker)
+
+    return stock.info["currentPrice"]
