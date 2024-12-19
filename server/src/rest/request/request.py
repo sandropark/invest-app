@@ -13,7 +13,7 @@ class StockInfoReq(BaseModel):
     def toDomain(self) -> StockInfo:
         return StockInfo(
             target_rate=self.target_rate,
-            rebalance_amt=self.rebalance_amt,
+            rebalance_qty=self.rebalance_amt,
         )
 
 

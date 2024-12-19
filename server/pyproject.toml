@@ -37,4 +37,4 @@ addopts = ["--import-mode=importlib"]
 pythonpath = [".", "src"]
 
 [tool.black]
-line-length = 120
+line-length = 150

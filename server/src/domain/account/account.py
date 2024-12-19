@@ -10,10 +10,11 @@ from src.domain.type import Market
 
 
 class HoldingsInfo:
-    def __init__(self, name: str, amount: float, avg_price: float):
+    def __init__(self, name: str, quantity: float, avg_price: float, eval_amt: float):
         self.name: str = name  # 종목명
-        self.amount: float = amount  # 보유수량
+        self.quantity: float = quantity  # 보유수량
         self.avg_price: float = avg_price  # 평단가
+        self.eval_amt: float = eval_amt  # 평가금액
 
 
 class Account(ABC):
@@ -49,8 +50,9 @@ class HantuAccount(Account):
         return {
             stock["pdno"]: HoldingsInfo(
                 name=stock["prdt_name"],
-                amount=float(stock["hldg_qty"]),
+                quantity=float(stock["hldg_qty"]),
                 avg_price=float(stock["pchs_avg_pric"]),
+                eval_amount=float(stock["evl_amt"]),
             )
             for stock in kis_client.get_stocks(self._kis_info())
         }
@@ -106,7 +108,7 @@ class UpbitAccount(Account):
         return {
             stock["currency"]: HoldingsInfo(
                 name=stock["currency"],
-                amount=float(stock["balance"]),
+                quantity=float(stock["balance"]),
                 avg_price=float(stock["avg_buy_price"]),
             )
             for stock in self.upbit.get_balances()
