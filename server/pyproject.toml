@@ -24,8 +24,13 @@ sqlalchemy = "^2.0.36"
 alembic = "^1.14.0"
 pyupbit = "^0.2.34"
 ipykernel = "^6.29.5"
+pytest = "^8.3.4"
 
 
 [build-system]
 requires = ["poetry-core"]
 build-backend = "poetry.core.masonry.api"
+
+[tool.pytest.ini_options]
+addopts = ["--import-mode=importlib"]
+pythonpath = [".", "src"]

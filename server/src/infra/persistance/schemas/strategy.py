@@ -1,7 +1,7 @@
 from sqlalchemy import JSON, ForeignKey, TypeDecorator
-from domain.type import TimeUnit
+from domain.type import Market, TimeUnit
 from infra.persistance.schemas.account import AccountEntity
-from infra.persistance.schemas.base import BaseEntity
+from infra.persistance.schemas.base import BaseEntity, EnumType
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 from sqlalchemy.dialects import sqlite
 from typing import Dict, List
@@ -66,6 +66,7 @@ class StrategyEntity(BaseEntity):
     __tablename__ = "strategy"
     name: Mapped[str] = mapped_column(sqlite.VARCHAR(30), index=True)
     invest_rate: Mapped[float] = mapped_column(sqlite.FLOAT)
+    market: Mapped[Market] = mapped_column(EnumType(Market))
     stocks: Mapped[Dict[str, StockInfo]] = mapped_column(StockInfoDict, nullable=True)
     interval: Mapped[Interval] = mapped_column(IntervalType)
     last_run: Mapped[str] = mapped_column(sqlite.DATETIME, nullable=True)

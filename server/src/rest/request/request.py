@@ -1,6 +1,6 @@
 from typing import Dict, List, Optional
 from pydantic import BaseModel
-from domain.type import BrokerType, TimeUnit
+from domain.type import BrokerType, Market, TimeUnit
 from infra.persistance.schemas.strategy import Interval, StockInfo
 from infra.persistance.schemas.strategy import StrategyEntity
 from infra.persistance.schemas.account import AccountEntity
@@ -34,6 +34,7 @@ class StrategyCreateReq(BaseModel):
     stocks: Dict[str, StockInfoReq]
     interval: Optional[IntervalReq] = None
     account_id: int
+    market: Market
 
     def toDomain(self) -> StrategyEntity:
         return StrategyEntity(
@@ -42,6 +43,7 @@ class StrategyCreateReq(BaseModel):
             stocks={k: v.toDomain() for k, v in self.stocks.items()},
             interval=self.interval.toDomain(),
             account_id=self.account_id,
+            market=self.market,
         )
 
 

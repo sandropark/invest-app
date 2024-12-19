@@ -13,8 +13,8 @@ class EnvType(Enum):
 
 
 class Market(Enum):
-    KR = auto()
-    US = auto()
+    KR = "KR"
+    US = "US"
 
 
 class TimeUnit(Enum):

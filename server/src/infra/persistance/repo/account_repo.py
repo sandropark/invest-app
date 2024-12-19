@@ -56,7 +56,7 @@ def update(id: int, account: AccountEntity) -> AccountEntity:
 
 def get(id: int) -> AccountEntity:
     with get_db() as db:
-        account = db.query(AccountEntity).get(id)
+        account = db.get(AccountEntity, id)
         assert account is not None, f"계좌가 존재하지 않습니다. id={id}"
         return account
 
