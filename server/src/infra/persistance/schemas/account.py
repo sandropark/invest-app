@@ -1,7 +1,7 @@
 from sqlalchemy import JSON, TypeDecorator
 from sqlalchemy.dialects import sqlite
 from sqlalchemy.orm import Mapped, mapped_column
-from src.domain.account.token import KisAccessToken
+from src.infra.kis.access_token import KisAccessToken
 from src.domain.type import BrokerType
 
 from src.infra.persistance.schemas.base import BaseEntity, EnumType
@@ -32,7 +32,5 @@ class AccountEntity(BaseEntity):
     product_code: Mapped[str] = mapped_column(sqlite.CHAR(2), nullable=True)
     login_id: Mapped[str] = mapped_column(sqlite.VARCHAR(30), nullable=True)
     url_base: Mapped[str] = mapped_column(sqlite.VARCHAR(100), nullable=True)
-    is_virtual: Mapped[bool] = mapped_column(
-        sqlite.BOOLEAN, default=False, nullable=False
-    )
+    is_virtual: Mapped[bool] = mapped_column(sqlite.BOOLEAN, default=False, nullable=False)
     token: Mapped[KisAccessToken] = mapped_column(TokenType, nullable=True)

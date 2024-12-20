@@ -5,7 +5,7 @@ from src.domain.account.account import (
     KisVirtualAccount,
     UpbitAccount,
 )
-from src.domain.account.token import KisAccessToken
+from src.infra.kis.access_token import KisAccessToken
 from src.domain.exception import InvestAppException
 from src.domain.type import BrokerType, Market
 from src.infra.kis import kis_client

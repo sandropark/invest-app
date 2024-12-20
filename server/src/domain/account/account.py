@@ -9,7 +9,7 @@ from src.infra.kis import kis_client
 from src.infra.kis.dto import KisInfo
 from src.infra.persistance.schemas.account import AccountEntity
 from src.domain.type import Market
-from src.domain.account.token import KisAccessToken
+from src.infra.kis.access_token import KisAccessToken
 
 
 class Account(ABC):
@@ -110,9 +110,7 @@ class UpbitAccount(Account):
                 total_balance += float(stock["balance"])
             else:
                 sleep(0.1)
-                current_price = float(
-                    pyupbit.get_current_price(f"KRW-{stock['currency']}")
-                )
+                current_price = float(pyupbit.get_current_price(f"KRW-{stock['currency']}"))
                 total_balance += current_price * float(stock["balance"])
 
         return total_balance

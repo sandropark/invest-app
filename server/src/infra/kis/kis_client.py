@@ -1,6 +1,6 @@
 import json
 import requests
-from src.domain.account.token import KisAccessToken
+from src.infra.kis.access_token import KisAccessToken
 from src.domain.exception import InvestAppException
 from src.infra.kis.dto import BalanceResponse, KisInfo
 import yfinance as yf
@@ -27,9 +27,7 @@ def get_token(info: KisInfo) -> KisAccessToken:
 
 def get_balance(info: KisInfo, market: Market = Market.KR) -> float:
     if market == Market.KR:
-        return BalanceResponse.of(
-            _get_balance_kr(info).json()["output2"][0]
-        ).total_money
+        return BalanceResponse.of(_get_balance_kr(info).json()["output2"][0]).total_money
 
     return _get_balance_us(info)
 
