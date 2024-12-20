@@ -16,21 +16,21 @@ upbit = None
 
 
 def get_balance(account_id: int, market: Market = Market.KR) -> float:
-    account: Account = _get_account(account_id)
+    account: Account = get_account(account_id)
     return account.get_balance(market)
 
 
 def buy(account_id: int, ticker: str, amt: int) -> float:
-    account = _get_account(account_id)
+    account = get_account(account_id)
     return account.buy_market_order(ticker, amt)
 
 
 def get_stocks(account_id: int):
-    account = _get_account(account_id)
+    account = get_account(account_id)
     return account.get_holdings()
 
 
-def _get_account(account_id: int) -> Account:
+def get_account(account_id: int) -> Account:
     account: AccountEntity = account_repo.get(account_id)
 
     global kis_real, kis_virtual, upbit
@@ -54,7 +54,7 @@ def _get_account(account_id: int) -> Account:
 
 
 def get_current_price(account_id: int, ticker: str) -> float:
-    account = _get_account(account_id)
+    account = get_account(account_id)
     return account.get_current_price(ticker)
 
 

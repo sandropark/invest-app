@@ -1,6 +1,7 @@
+from dataclasses import dataclass
 from sqlalchemy import JSON, ForeignKey, TypeDecorator
 from src.domain.stock.stock_info import StockInfo
-from src.domain.type import Market, TimeUnit
+from src.domain.type import Market, TimeUnit, TriggerType
 from src.infra.persistance.schemas.account import AccountEntity
 from src.infra.persistance.schemas.base import BaseEntity, EnumType
 from sqlalchemy.orm import Mapped, mapped_column, relationship
@@ -8,13 +9,11 @@ from sqlalchemy.dialects import sqlite
 from typing import Dict, List
 
 
+@dataclass
 class Interval:
-    def __init__(self, time_unit: TimeUnit, value: List[int]):
-        self.time_unit = time_unit
-        self.value = value
-
-    def __str__(self):
-        return f"{self.start} {self.end}"
+    trigger_type: TriggerType
+    time_unit: TimeUnit
+    value: List[int]
 
     def to_dict(self):
         return {

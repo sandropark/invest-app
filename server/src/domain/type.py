@@ -30,5 +30,5 @@ class BrokerType(Enum):
     KIS = "KIS"
     UPBIT = "UPBIT"
 
-    def is_hantu(self):
+    def is_kis(self):
         return self == BrokerType.KIS
