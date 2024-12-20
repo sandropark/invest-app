@@ -1,6 +1,7 @@
-from src.domain.account.account import Account, KisAccount
+from src.domain.account.account import Account
 from src.domain.exception import InvestAppException
 from src.domain.type import BrokerType
+from src.infra.kis.account import KisAccount
 from src.infra.persistance.schemas.account import AccountEntity
 
 
