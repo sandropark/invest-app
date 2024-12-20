@@ -1,6 +1,5 @@
 from fastapi import APIRouter
 from src.domain.account import account_service
-from src.infra.kis.token_refresher import refresh_token, refresh_token_all
 from src.infra.persistance.repo import account_repo
 from src.rest.request.request import AccountCreateReq
 
@@ -50,12 +49,7 @@ def get_stocks(id: int):
 
 @router.post("/refresh-kis-token", summary="한투 토큰 갱신 (전체)")
 def refresh_kis_token_all(refresh_force: bool = False):
-    return refresh_token_all(refresh_force)
-
-
-@router.post("/{id}/refresh-kis-token", summary="한투 토큰 갱신")
-def refresh_kis_token(id: int):
-    return refresh_token(id)
+    return account_service.refresh_kis_token(refresh_force)
 
 
 @router.get("/{id}/current-price", summary="현재 가격 조회")

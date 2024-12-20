@@ -1,11 +1,14 @@
 from src.domain.account.account import (
     Account,
-    HantuRealAccount,
-    HantuVirtualAccount,
+    KisRealAccount,
+    KisVirtualAccount,
     UpbitAccount,
 )
+from src.domain.account.token import KisAccessToken
 from src.domain.exception import InvestAppException
 from src.domain.type import BrokerType, Market
+from src.infra.kis import kis_client
+from src.infra.persistance.mapper import account_mapper
 from src.infra.persistance.repo import account_repo
 from src.infra.persistance.schemas.account import AccountEntity
 
@@ -37,12 +40,12 @@ def _get_account(account_id: int) -> Account:
 
     if account.broker_type == BrokerType.KIS and not account.is_virtual:
         if kis_real is None:
-            kis_real = HantuRealAccount(account)
+            kis_real = KisRealAccount(account)
         return kis_real
 
     if account.broker_type == BrokerType.KIS and account.is_virtual:
         if kis_virtual is None:
-            kis_virtual = HantuVirtualAccount(account)
+            kis_virtual = KisVirtualAccount(account)
         return kis_virtual
 
     if account.broker_type == BrokerType.UPBIT:
@@ -58,3 +61,15 @@ def _get_account(account_id: int) -> Account:
 def get_current_price(account_id: int, ticker: str) -> float:
     account = _get_account(account_id)
     return account.get_current_price(ticker)
+
+
+def refresh_kis_token():
+    accounts = account_repo.find_all(broker_type=BrokerType.KIS)
+
+    for account in accounts:
+        kis_account: KisAccount = account_mapper.to_kis_domain(account)
+        token: KisAccessToken = kis_account.access_token
+        if token is None or token.is_expired():
+            account.token = kis_client.get_token(kis_account._get_kis_info())
+
+    account_repo.save_all(accounts)

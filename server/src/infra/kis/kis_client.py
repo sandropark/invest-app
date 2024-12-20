@@ -1,5 +1,6 @@
 import json
 import requests
+from src.domain.account.token import KisAccessToken
 from src.domain.exception import InvestAppException
 from src.infra.kis.dto import BalanceResponse, KisInfo
 import yfinance as yf
@@ -7,7 +8,7 @@ import yfinance as yf
 from src.domain.type import Market
 
 
-def make_token(info: KisInfo) -> str:
+def get_token(info: KisInfo) -> KisAccessToken:
     headers = {"content-type": "application/json"}
     body = {
         "grant_type": "client_credentials",
@@ -18,10 +19,10 @@ def make_token(info: KisInfo) -> str:
     URL = f"{info.url_base}/oauth2/tokenP"
     res = requests.post(URL, headers=headers, data=json.dumps(body))
 
-    if res.status_code == 200:
-        return res.json()["access_token"]
+    if res.status_code != 200:
+        raise InvestAppException("토큰 생성 실패. {}", 500, res.text)
 
-    raise InvestAppException("토큰 생성 실패. {}", 400, res.text)
+    return KisAccessToken.of(res.json())
 
 
 def get_balance(info: KisInfo, market: Market = Market.KR) -> float:

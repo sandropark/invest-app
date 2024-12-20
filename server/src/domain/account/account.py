@@ -1,5 +1,7 @@
 from abc import ABC, abstractmethod
+from dataclasses import dataclass
 from time import sleep
+from venv import logger
 import pyupbit
 from pyupbit import Upbit
 
@@ -7,23 +9,31 @@ from src.infra.kis import kis_client
 from src.infra.kis.dto import KisInfo
 from src.infra.persistance.schemas.account import AccountEntity
 from src.domain.type import Market
+from src.domain.account.token import KisAccessToken
 
 
+@dataclass
 class HoldingsInfo:
-    def __init__(self, name: str, quantity: float, avg_price: float, eval_amt: float):
-        self.name: str = name  # 종목명
-        self.quantity: float = quantity  # 보유수량
-        self.avg_price: float = avg_price  # 평단가
-        self.eval_amt: float = eval_amt  # 평가금액
+    name: str  # 종목명
+    quantity: float  # 보유수량
+    avg_price: float  # 평단가
+    eval_amt: float  # 평가금액
 
 
 class Account(ABC):
+    def __init__(self, account: AccountEntity):
+        self.account = account
+
     @abstractmethod
     def get_balance(self, market: Market = Market.KR) -> float:
         pass
 
     @abstractmethod
     def buy_market_order(self, ticker: str, amount: float) -> None:
+        pass
+
+    @abstractmethod
+    def sell_market_order(self, ticker: str, amount: float) -> None:
         pass
 
     @abstractmethod
@@ -35,15 +45,19 @@ class Account(ABC):
         pass
 
 
-class HantuAccount(Account):
+class KisAccount(Account):
     def __init__(self, account: AccountEntity, is_virtual: bool = False):
-        self.account: AccountEntity = account
+        super().__init__(account=account)
         self.is_virtual: bool = is_virtual
+        self.access_token: KisAccessToken = self.account.token
 
     def get_balance(self, market: Market = Market.KR) -> float:
-        return kis_client.get_balance(self._kis_info(), market)
+        return kis_client.get_balance(self._get_kis_info(), market)
 
     def buy_market_order(self, ticker: str, amount: float) -> None:
+        pass
+
+    def sell_market_order(self, ticker: str, amount: float) -> None:
         pass
 
     def get_holdings(self) -> dict[str, HoldingsInfo]:
@@ -54,15 +68,23 @@ class HantuAccount(Account):
                 avg_price=float(stock["pchs_avg_pric"]),
                 eval_amount=float(stock["evl_amt"]),
             )
-            for stock in kis_client.get_stocks(self._kis_info())
+            for stock in kis_client.get_stocks(self._get_kis_info())
         }
 
     def get_current_price(self, ticker: str) -> float:
-        return kis_client.get_current_price(self._kis_info(), ticker)
+        return kis_client.get_current_price(self._get_kis_info(), ticker)
 
-    def _kis_info(self):
+    def refresh_token(self):
+        if self._is_token_invalid():
+            self.account.token = kis_client.get_token(self._get_kis_info())
+            logger.info(f"토큰 갱신 완료. account_id={self.account.id}")
+
+    def _is_token_invalid(self) -> bool:
+        return self.access_token is None or self._is_token_expired()
+
+    def _get_kis_info(self) -> KisInfo:
         return KisInfo(
-            token=self.account.get_access_token(),
+            token=self.access_token.token,
             app_key=self.account.app_key,
             secret_key=self.account.secret_key,
             url_base=self.account.url_base,
@@ -72,20 +94,20 @@ class HantuAccount(Account):
         )
 
 
-class HantuRealAccount(HantuAccount):
+class KisRealAccount(KisAccount):
     def __init__(self, account: AccountEntity):
         super().__init__(account=account)
 
 
-class HantuVirtualAccount(HantuAccount):
+class KisVirtualAccount(KisAccount):
     def __init__(self, account: AccountEntity):
         super().__init__(account=account, is_virtual=True)
 
 
 class UpbitAccount(Account):
     def __init__(self, account: AccountEntity):
-        self.account = account
-        self.upbit: Upbit = Upbit(access=account.app_key, secret=account.secret_key)
+        super().__init__(account=account)
+        self.upbit = Upbit(access=self.account.app_key, secret=self.account.secret_key)
 
     def get_balance(self, market: Market = Market.KR) -> float:
         stocks: list[dict] = self.upbit.get_balances()
@@ -96,13 +118,18 @@ class UpbitAccount(Account):
                 total_balance += float(stock["balance"])
             else:
                 sleep(0.1)
-                current_price = float(pyupbit.get_current_price(f"KRW-{stock['currency']}"))
+                current_price = float(
+                    pyupbit.get_current_price(f"KRW-{stock['currency']}")
+                )
                 total_balance += current_price * float(stock["balance"])
 
         return total_balance
 
     def buy_market_order(self, ticker: str, amount: float) -> None:
         self.upbit.buy_market_order(ticker, amount)
+
+    def sell_market_order(self, ticker: str, amount: float) -> None:
+        self.upbit.sell_market_order(ticker, amount)
 
     def get_holdings(self) -> dict[str, HoldingsInfo]:
         return {

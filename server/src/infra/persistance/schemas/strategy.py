@@ -1,6 +1,5 @@
 from sqlalchemy import JSON, ForeignKey, TypeDecorator
-from src.domain.account.account import HoldingsInfo
-from src.domain.stock.stock import StockInfo
+from src.domain.stock.stock_info import StockInfo
 from src.domain.type import Market, TimeUnit
 from src.infra.persistance.schemas.account import AccountEntity
 from src.infra.persistance.schemas.base import BaseEntity, EnumType

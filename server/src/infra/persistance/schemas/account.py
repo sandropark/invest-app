@@ -1,41 +1,23 @@
-from dataclasses import dataclass
-from datetime import datetime, timedelta
 from sqlalchemy import JSON, TypeDecorator
 from sqlalchemy.dialects import sqlite
 from sqlalchemy.orm import Mapped, mapped_column
+from src.domain.account.token import KisAccessToken
 from src.domain.type import BrokerType
 
 from src.infra.persistance.schemas.base import BaseEntity, EnumType
 
 
-@dataclass
-class Token:
-    token: str
-    expiration: str
-
-    def of(json: dict):
-        return Token(
-            token=json["access_token"], expiration=json["access_token_token_expired"]
-        )
-
-    def to_dict(self):
-        return {
-            "token": self.token,
-            "expiration": self.expiration,
-        }
-
-
 class TokenType(TypeDecorator):
     impl = JSON
 
-    def process_bind_param(self, value: Token, dialect):
+    def process_bind_param(self, value: KisAccessToken, dialect):
         if value is not None:
             return value.to_dict()
         return None
 
     def process_result_value(self, value, dialect):
         if value is not None:
-            return Token(**value)
+            return KisAccessToken(**value)
         return None
 
 
@@ -53,18 +35,4 @@ class AccountEntity(BaseEntity):
     is_virtual: Mapped[bool] = mapped_column(
         sqlite.BOOLEAN, default=False, nullable=False
     )
-    token: Mapped[Token] = mapped_column(TokenType, nullable=True)
-
-    def is_token_invalid(self) -> bool:
-        return self.token is None or self._is_token_expired()
-
-    def _is_token_expired(self):
-        return self._get_token_expiration() < datetime.now()
-
-    def _get_token_expiration(self) -> datetime:
-        return datetime.strptime(
-            self.token.expiration, "%Y-%m-%d %H:%M:%S"
-        ) - timedelta(hours=12)
-
-    def get_access_token(self) -> str:
-        return self.token.token
+    token: Mapped[KisAccessToken] = mapped_column(TokenType, nullable=True)
