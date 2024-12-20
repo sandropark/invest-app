@@ -16,6 +16,12 @@ class Market(Enum):
     KR = "KR"
     US = "US"
 
+    def is_kr(self):
+        return self == Market.KR
+
+    def is_us(self):
+        return self == Market.US
+
 
 class TimeUnit(Enum):
     MINUTE = "MINUTE"

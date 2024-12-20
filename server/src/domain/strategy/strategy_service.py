@@ -7,17 +7,16 @@ from src.domain.strategy.strategy import Strategy
 from src.infra.persistance.mapper import strategy_mapper
 from src.infra.persistance.repo import strategy_repo
 from src.infra.persistance.schemas.strategy import StrategyEntity
+from src.infra.stock_market import stock_market_client
 
 
 def rebalance(strategy_id: int):
     strategy: Strategy = get_strategy(strategy_id)
 
-    if strategy.has_rebalanced():
+    if strategy.has_rebalanced() or not stock_market_client.is_market_open(strategy.get_market()):
         return
 
-    account: Account = account_service.get_account(strategy.account_id)
-
-    # TODO : 1. 마켓이 닫힌 경우 로그 남기고 종료. (외부 : 마켓 물어보기)
+    account: Account = account_service.get_account(strategy.get_account_id())
 
     # 2. 포트폴리오 할당 금액 계산 (포트 폴리오 비중 * 잔고)
     invest_amount = strategy.get_invest_amount(account.get_balance())

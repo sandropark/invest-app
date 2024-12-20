@@ -3,6 +3,7 @@ from datetime import datetime
 from typing import Dict
 
 from src.domain.stock.stock_info import StockInfo
+from src.domain.type import Market
 from src.infra.persistance.schemas.strategy import StrategyEntity
 
 
@@ -25,3 +26,9 @@ class Strategy:
 
     def run_this_month(self):
         return datetime.now().date() == self.entity.last_run.date()
+
+    def get_market(self) -> Market:
+        return self.entity.market
+
+    def get_account_id(self) -> int:
+        return self.entity.account_id
