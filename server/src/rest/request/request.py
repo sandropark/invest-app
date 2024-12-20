@@ -8,12 +8,12 @@ from src.infra.persistance.schemas.account import AccountEntity
 
 class StockInfoReq(BaseModel):
     target_rate: Optional[float] = None
-    rebalance_amt: Optional[int] = None
+    rebalance_qty: Optional[int] = None
 
     def toDomain(self) -> StockInfo:
         return StockInfo(
             target_rate=self.target_rate,
-            rebalance_qty=self.rebalance_amt,
+            rebalance_qty=self.rebalance_qty,
         )
 
 

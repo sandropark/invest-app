@@ -1,7 +1,8 @@
 from dataclasses import dataclass
 from typing import Dict
 
-from src.domain.account.account import Account, HoldingsInfo
+from src.domain.account.account import Account
+from src.domain.account.holdings import HoldingsInfo
 from src.infra.persistance.schemas.strategy import StrategyEntity
 
 

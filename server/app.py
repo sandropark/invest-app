@@ -1,6 +1,6 @@
 from src.domain.config.logging_config import logger
 from fastapi import FastAPI, Request
-from src.rest import stock, strategy, account
+from src.rest import strategy, account
 from fastapi.responses import JSONResponse
 from src.domain.exception import InvestAppException
 from src.scheduler import scheduler
@@ -9,7 +9,6 @@ app = FastAPI(lifespan=scheduler.lifespan)
 
 app.include_router(strategy.router)
 app.include_router(account.router)
-app.include_router(stock.router)
 
 
 @app.exception_handler(InvestAppException)

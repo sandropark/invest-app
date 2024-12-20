@@ -1,23 +1,15 @@
 from abc import ABC, abstractmethod
-from dataclasses import dataclass
 from time import sleep
 from venv import logger
 import pyupbit
 from pyupbit import Upbit
 
+from src.domain.account.holdings import HoldingsInfo
 from src.infra.kis import kis_client
 from src.infra.kis.dto import KisInfo
 from src.infra.persistance.schemas.account import AccountEntity
 from src.domain.type import Market
 from src.domain.account.token import KisAccessToken
-
-
-@dataclass
-class HoldingsInfo:
-    name: str  # 종목명
-    quantity: float  # 보유수량
-    avg_price: float  # 평단가
-    eval_amt: float  # 평가금액
 
 
 class Account(ABC):

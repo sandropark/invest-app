@@ -1,5 +1,6 @@
 from src.domain.account.account import (
     Account,
+    KisAccount,
     KisRealAccount,
     KisVirtualAccount,
     UpbitAccount,
@@ -53,9 +54,7 @@ def _get_account(account_id: int) -> Account:
             upbit = UpbitAccount(account)
         return upbit
 
-    raise InvestAppException(
-        "지원하지 않는 계좌 종류입니다. {}", 400, account.broker_type
-    )
+    raise InvestAppException("지원하지 않는 계좌 종류입니다. {}", 400, account.broker_type)
 
 
 def get_current_price(account_id: int, ticker: str) -> float:

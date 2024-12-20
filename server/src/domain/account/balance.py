@@ -1,4 +1,5 @@
 from abc import ABC, abstractmethod
+from dataclasses import dataclass, field
 
 
 class Balance(ABC):
@@ -23,14 +24,18 @@ class Balance(ABC):
         pass
 
 
+@dataclass
 class MyKisBalance(Balance):
-    def __init__(self, stock_money: float, stock_revenue: float, total_money: float):
-        self.stock_money = stock_money  # 주식 총 평가 금액
-        self.stock_revenue = stock_revenue  # 평가 손익 금액
-        self.total_money = total_money  # 총 평가 금액
-        self.remain_money = total_money - stock_money  # 총 예수금 (주문 가능 현금)
+    stock_money: float  # 주식 총 평가 금액
+    stock_revenue: float  # 평가 손익 금액
+    total_money: float  # 총 평가 금액
+    remain_money: float = field(init=False)  # 총 예수금 (주문 가능 현금)
 
-    def of(res: dict) -> Balance:
+    def __post_init__(self):
+        self.remain_money = self.total_money - self.stock_money
+
+    @classmethod
+    def of(res: dict) -> "Balance":
         return MyKisBalance(
             stock_money=float(res["scts_evlu_amt"]),
             stock_revenue=float(res["evlu_pfls_smtl_amt"]),
