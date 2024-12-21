@@ -1,9 +1,9 @@
 from src.domain.account.dto import AccountDto
 from src.domain.common.exception import ExeptionType, InvestAppException
 from src.domain.common.type import BrokerType
-from src.infra.kis.account import KisAccount
-from src.infra.persistance.mapper.mapper import Mapper
-from src.infra.persistance.schemas.account import AccountEntity
+from src.infra.account.kis.account import KisAccount
+from src.infra.account.persistence.account import AccountEntity
+from src.infra.common.persistence.mapper import Mapper
 
 
 class AccountMapper(Mapper[AccountEntity, AccountDto]):

@@ -4,7 +4,7 @@ from sqlalchemy.orm import Session
 
 from src.domain.common.exception import ExeptionType, InvestAppException
 from src.domain.common.port import Repository
-from src.infra.persistance.mapper.mapper import Mapper
+from src.infra.common.persistence.mapper import Mapper
 
 
 E = TypeVar("E")

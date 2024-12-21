@@ -1,10 +1,9 @@
 from typing import Dict, List, Optional
 from pydantic import BaseModel
+from src.domain.account.dto import AccountDto
 from src.domain.strategy.strategy import Strategy
 from src.domain.common.type import BrokerType, Market, TimeUnit
-from src.infra.persistance.schemas.strategy import Interval, StockInfo
-from src.infra.persistance.schemas.strategy import StrategyEntity
-from src.infra.persistance.schemas.account import AccountEntity
+from src.infra.strategy.persistance.strategy import Interval, StockInfo
 
 
 class StockInfoReq(BaseModel):
@@ -58,8 +57,8 @@ class AccountCreateReq(BaseModel):
     token: Optional[str] = None
     broker_type: BrokerType
 
-    def to_domain(self) -> AccountEntity:
-        return AccountEntity(
+    def to_domain(self) -> AccountDto:
+        return AccountDto(
             name=self.name,
             number=self.number,
             product_code=self.product_code,

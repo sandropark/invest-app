@@ -1,10 +1,10 @@
 from sqlalchemy import JSON, TypeDecorator
 from sqlalchemy.dialects import sqlite
 from sqlalchemy.orm import Mapped, mapped_column
-from src.infra.kis.access_token import KisAccessToken
+from src.infra.account.kis.access_token import KisAccessToken
 from src.domain.common.type import BrokerType
 
-from src.infra.persistance.schemas.base import BaseEntity, EnumType
+from src.infra.common.persistence.base import BaseEntity, EnumType
 
 
 class TokenType(TypeDecorator):

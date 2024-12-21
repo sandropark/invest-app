@@ -1,27 +1,12 @@
-from dataclasses import dataclass
 from datetime import datetime
 from sqlalchemy import JSON, ForeignKey, TypeDecorator
-from src.domain.common.type import Market, TimeUnit
+from src.domain.common.type import Market
+from src.domain.strategy.interval import Interval
 from src.domain.strategy.stock_info import StockInfo
-from src.infra.persistance.schemas.base import BaseEntity, EnumType
+from src.infra.common.persistence.base import BaseEntity, EnumType
 from sqlalchemy.orm import Mapped, mapped_column
 from sqlalchemy.dialects import sqlite
-from typing import Dict, List
-
-
-@dataclass
-class Interval:
-    time_unit: TimeUnit
-    value: List[int]
-
-    def to_dict(self):
-        return {
-            "time_unit": self.time_unit.value,
-            "value": self.value,
-        }
-
-    def is_month(self):
-        return self.time_unit == TimeUnit.MONTH
+from typing import Dict
 
 
 class StockInfoDict(TypeDecorator):

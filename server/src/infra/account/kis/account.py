@@ -3,9 +3,9 @@ from src.domain.account.account import Account
 from src.domain.account.dto import AccountDto
 from src.domain.account.holdings import HoldingsInfo
 from src.domain.common.type import Market
-from src.infra.kis import kis_client
-from src.infra.kis.access_token import KisAccessToken
-from src.infra.kis.dto import KisInfo
+from src.infra.account.kis import kis_client
+from src.infra.account.kis.access_token import KisAccessToken
+from src.infra.account.kis.dto import KisInfo
 
 
 class KisAccount(Account):

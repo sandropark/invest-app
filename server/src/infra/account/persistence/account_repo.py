@@ -3,9 +3,9 @@ from pytest import Session
 from sqlalchemy import select
 from src.domain.account.dto import AccountDto
 from src.domain.common.type import BrokerType
-from src.infra.persistance.mapper.mapper import Mapper
-from src.infra.persistance.repo.repo import SqlalchemyRepository
-from src.infra.persistance.schemas.account import AccountEntity
+from src.infra.common.persistence.mapper import Mapper
+from src.infra.common.persistence.repo import SqlalchemyRepository
+from src.infra.account.persistence.account import AccountEntity
 
 
 class SqlAlchemyAccountRepository(SqlalchemyRepository[AccountEntity, AccountDto]):

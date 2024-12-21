@@ -5,8 +5,9 @@ from src.domain.account.holdings import HoldingsInfo
 from src.domain.common.port import *
 from src.domain.strategy.stock_info import StockInfo
 from src.domain.strategy.strategy import Strategy
-from src.infra.persistance.mapper import strategy_mapper
 from dependency_injector.wiring import inject
+
+from src.infra.strategy.persistance import strategy_mapper
 
 
 class StrategyService:

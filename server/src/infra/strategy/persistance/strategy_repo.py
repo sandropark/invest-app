@@ -1,8 +1,8 @@
 from sqlalchemy.orm import Session
 from src.domain.strategy.strategy import Strategy
-from src.infra.persistance.mapper.mapper import Mapper
-from src.infra.persistance.repo.repo import SqlalchemyRepository
-from src.infra.persistance.schemas.strategy import StrategyEntity
+from src.infra.common.persistence.mapper import Mapper
+from src.infra.common.persistence.repo import SqlalchemyRepository
+from src.infra.strategy.persistance.strategy import StrategyEntity
 
 
 class SqlAlchemyStrategyRepository(SqlalchemyRepository[StrategyEntity, Strategy]):

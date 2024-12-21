@@ -1,6 +1,6 @@
 from src.domain.strategy.strategy import Strategy
-from src.infra.persistance.schemas.strategy import StrategyEntity
-from src.infra.persistance.mapper.mapper import Mapper
+from src.infra.common.persistence.mapper import Mapper
+from src.infra.strategy.persistance.strategy import StrategyEntity
 
 
 class StrategyMapper(Mapper[StrategyEntity, Strategy]):
