@@ -1,3 +1,4 @@
+from datetime import datetime
 from typing import Dict
 from src.domain.account import account_service
 from src.domain.account.account import Account
@@ -6,20 +7,27 @@ from src.domain.stock.stock_info import StockInfo
 from src.domain.strategy.strategy import Strategy
 from src.infra.persistance.mapper import strategy_mapper
 from src.infra.persistance.repo import strategy_repo
-from src.infra.persistance.schemas.strategy import StrategyEntity
 from src.infra.stock_market import stock_market_client
 
 
-def rebalance(strategy_id: int):
-    strategy: Strategy = get_strategy(strategy_id)
+def rebalance_all():
+    strategy_entities = strategy_repo.find_all()
+    for strategy_entity in strategy_entities:
+        strategy = strategy_mapper.to_domain(strategy_entity)
+        rebalance_all(strategy)
 
-    if strategy.has_rebalanced() or not stock_market_client.is_market_open(strategy.get_market()):
+
+def rebalance(strategy: Strategy):
+    now = datetime.now()
+
+    # 1. 리밸런싱 조건 확인
+    if not strategy.is_time_to_rebalance(now) or not stock_market_client.is_market_open(strategy.get_market()):
         return
 
     account: Account = account_service.get_account(strategy.get_account_id())
 
     # 2. 포트폴리오 할당 금액 계산 (포트 폴리오 비중 * 잔고)
-    invest_amount = strategy.get_invest_amount(account.get_balance())
+    invest_amount: float = strategy.get_invest_amount(account.get_balance())
 
     # 3. 보유 종목 리스트 조회
     holddings_dict: Dict[str, HoldingsInfo] = account.get_holdings()
@@ -46,7 +54,4 @@ def rebalance(strategy_id: int):
 
     strategy.complete_rebalance()
 
-
-def get_strategy(strategy_id: int) -> Strategy:
-    strategy: StrategyEntity = strategy_repo.get(strategy_id)
-    return strategy_mapper.to_domain(strategy)
+    strategy_repo.save(strategy.entity)

@@ -9,10 +9,7 @@ class StockInfo:
     rebalance_qty: int = 0
 
     def to_dict(self):
-        return {
-            "target_rate": self.target_rate,
-            "rebalance_qty": self.rebalance_qty,
-        }
+        return {"target_rate": self.target_rate}
 
     def calculate_rebalance_amt(self, portfolio_target_amt: float, holdings: HoldingsInfo, current_price: float):
         # 종목 목표 금액

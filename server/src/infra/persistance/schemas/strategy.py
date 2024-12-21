@@ -1,7 +1,8 @@
 from dataclasses import dataclass
+from datetime import datetime
 from sqlalchemy import JSON, ForeignKey, TypeDecorator
 from src.domain.stock.stock_info import StockInfo
-from src.domain.type import Market, TimeUnit, TriggerType
+from src.domain.type import Market, TimeUnit
 from src.infra.persistance.schemas.account import AccountEntity
 from src.infra.persistance.schemas.base import BaseEntity, EnumType
 from sqlalchemy.orm import Mapped, mapped_column, relationship
@@ -11,7 +12,6 @@ from typing import Dict, List
 
 @dataclass
 class Interval:
-    trigger_type: TriggerType
     time_unit: TimeUnit
     value: List[int]
 
@@ -20,6 +20,9 @@ class Interval:
             "time_unit": self.time_unit.value,
             "value": self.value,
         }
+
+    def is_month(self):
+        return self.time_unit == TimeUnit.MONTH
 
 
 class StockInfoDict(TypeDecorator):
@@ -57,6 +60,6 @@ class StrategyEntity(BaseEntity):
     market: Mapped[Market] = mapped_column(EnumType(Market))
     stocks: Mapped[Dict[str, StockInfo]] = mapped_column(StockInfoDict, nullable=True)
     interval: Mapped[Interval] = mapped_column(IntervalType)
-    last_run: Mapped[str] = mapped_column(sqlite.DATETIME, nullable=True)
+    last_run: Mapped[datetime] = mapped_column(sqlite.DATETIME, nullable=True)
     account_id: Mapped[int] = mapped_column(ForeignKey("account.id"))
     account: Mapped[AccountEntity] = relationship()

@@ -4,7 +4,7 @@ from typing import Dict
 
 from src.domain.stock.stock_info import StockInfo
 from src.domain.type import Market
-from src.infra.persistance.schemas.strategy import StrategyEntity
+from src.infra.persistance.schemas.strategy import StrategyEntity, Interval
 
 
 @dataclass
@@ -20,12 +20,21 @@ class Strategy:
     def complete_rebalance(self):
         self.entity.last_run = datetime.now()
 
-    # 일단은 매달했는지 확인
-    def has_rebalanced(self) -> bool:
-        return self.entity.last_run is not None and self.run_this_month()
+    # TODO: 고도화 하기.
+    def is_time_to_rebalance(self, now: datetime) -> bool:
+        if self.entity.last_run is None:
+            return True
 
-    def run_this_month(self):
-        return datetime.now().date() == self.entity.last_run.date()
+        interval: Interval = self.entity.interval
+        if interval.is_month():
+            this_month = now.month
+            return this_month in interval.value and not self._run_this_month(now)
+
+        # TODO: 다른 조건 추가하기
+        return False
+
+    def _run_this_month(self, now: datetime):
+        return now.month == self.entity.last_run.month
 
     def get_market(self) -> Market:
         return self.entity.market
