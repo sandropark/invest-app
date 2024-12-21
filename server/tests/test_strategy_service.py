@@ -4,11 +4,11 @@ from src.containers import Container
 from src.domain.account.account import Account
 from src.domain.account.account_provider import AccountProvider
 from src.domain.account.holdings import HoldingsInfo
-from src.domain.port import Repository, StockMarketClient, TimeHolder
+from src.domain.common.port import Repository, StockMarketClient, TimeHolder
 from src.domain.strategy.stock_info import StockInfo
 from src.domain.strategy.strategy import Strategy
 from src.domain.strategy.strategy_service import StrategyService
-from src.domain.type import Market, TimeUnit
+from src.domain.common.type import Market, TimeUnit
 from src.infra.persistance.schemas.account import AccountEntity
 from src.infra.persistance.schemas.strategy import Interval
 

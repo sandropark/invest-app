@@ -2,7 +2,7 @@ from abc import ABC, abstractmethod
 from datetime import datetime
 from typing import List, TypeVar
 
-from src.domain.type import Market
+from src.domain.common.type import Market
 
 
 M = TypeVar("M")

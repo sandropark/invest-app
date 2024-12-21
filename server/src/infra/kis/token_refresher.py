@@ -1,5 +1,5 @@
 from src.containers import Container
-from src.domain.type import BrokerType
+from src.domain.common.type import BrokerType
 from src.infra.kis import kis_client
 from src.infra.kis.access_token import KisAccessToken
 from src.infra.kis.account import KisAccount

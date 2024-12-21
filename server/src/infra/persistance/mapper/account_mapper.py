@@ -1,6 +1,6 @@
 from src.domain.account.dto import AccountDto
-from src.domain.exception import ExeptionType, InvestAppException
-from src.domain.type import BrokerType
+from src.domain.common.exception import ExeptionType, InvestAppException
+from src.domain.common.type import BrokerType
 from src.infra.kis.account import KisAccount
 from src.infra.persistance.mapper.mapper import Mapper
 from src.infra.persistance.schemas.account import AccountEntity

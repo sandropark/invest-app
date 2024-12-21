@@ -2,7 +2,7 @@ from venv import logger
 from src.domain.account.account import Account
 from src.domain.account.dto import AccountDto
 from src.domain.account.holdings import HoldingsInfo
-from src.domain.type import Market
+from src.domain.common.type import Market
 from src.infra.kis import kis_client
 from src.infra.kis.access_token import KisAccessToken
 from src.infra.kis.dto import KisInfo

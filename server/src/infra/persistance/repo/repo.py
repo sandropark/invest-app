@@ -2,8 +2,8 @@ from typing import List, Type, TypeVar
 from sqlalchemy import delete, select, update
 from sqlalchemy.orm import Session
 
-from src.domain.exception import ExeptionType, InvestAppException
-from src.domain.port import Repository
+from src.domain.common.exception import ExeptionType, InvestAppException
+from src.domain.common.port import Repository
 from src.infra.persistance.mapper.mapper import Mapper
 
 

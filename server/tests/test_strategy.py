@@ -1,7 +1,6 @@
 from datetime import datetime
 from src.domain.strategy.strategy import Strategy, Interval
-from src.domain.type import Market, TimeUnit
-from src.infra.persistance.schemas.strategy import StrategyEntity
+from src.domain.common.type import TimeUnit
 
 
 # 1,2,3월에 실행해야하는 경우, 현재는 2월이고 마지막 실행이 1월이라면 True를 반환한다.

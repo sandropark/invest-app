@@ -1,5 +1,5 @@
 from dataclasses import dataclass
-from src.domain.type import BrokerType
+from src.domain.common.type import BrokerType
 from src.infra.kis.access_token import KisAccessToken
 
 

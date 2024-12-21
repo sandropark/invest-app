@@ -2,7 +2,7 @@ from typing import List
 from pytest import Session
 from sqlalchemy import select
 from src.domain.account.dto import AccountDto
-from src.domain.type import BrokerType
+from src.domain.common.type import BrokerType
 from src.infra.persistance.mapper.mapper import Mapper
 from src.infra.persistance.repo.repo import SqlalchemyRepository
 from src.infra.persistance.schemas.account import AccountEntity

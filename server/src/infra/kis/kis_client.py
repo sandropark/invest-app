@@ -1,11 +1,11 @@
 import json
 import requests
 from src.infra.kis.access_token import KisAccessToken
-from src.domain.exception import ExeptionType, InvestAppException
+from src.domain.common.exception import ExeptionType, InvestAppException
 from src.infra.kis.dto import BalanceResponse, KisInfo
 import yfinance as yf
 
-from src.domain.type import Market
+from src.domain.common.type import Market
 
 
 def get_token(info: KisInfo) -> KisAccessToken:

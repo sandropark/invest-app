@@ -5,8 +5,8 @@ from pyupbit import Upbit
 from src.domain.account.account import Account
 from src.domain.account.dto import AccountDto
 from src.domain.account.holdings import HoldingsInfo
-from src.domain.exception import ExeptionType, InvestAppException
-from src.domain.type import Market
+from src.domain.common.exception import ExeptionType, InvestAppException
+from src.domain.common.type import Market
 
 
 class UpbitAccount(Account):

@@ -2,8 +2,8 @@ from dataclasses import dataclass
 from datetime import datetime
 from typing import Dict
 
+from src.domain.common.type import Market
 from src.domain.strategy.stock_info import StockInfo
-from src.domain.type import Market
 from src.infra.persistance.schemas.strategy import StrategyEntity, Interval
 
 

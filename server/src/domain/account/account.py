@@ -2,7 +2,7 @@ from abc import ABC, abstractmethod
 
 from src.domain.account.dto import AccountDto
 from src.domain.account.holdings import HoldingsInfo
-from src.domain.type import Market
+from src.domain.common.type import Market
 
 
 class Account(ABC):

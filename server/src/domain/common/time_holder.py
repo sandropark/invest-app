@@ -1,5 +1,5 @@
 from datetime import datetime
-from src.domain.port import TimeHolder
+from src.domain.common.port import TimeHolder
 
 
 class TimeHolderImpl(TimeHolder):

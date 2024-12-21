@@ -3,9 +3,9 @@ from abc import ABC, abstractmethod
 
 from src.domain.account.account import Account
 from src.domain.account.dto import AccountDto
-from src.domain.exception import ExeptionType, InvestAppException
-from src.domain.port import Repository
-from src.domain.type import BrokerType
+from src.domain.common.exception import ExeptionType, InvestAppException
+from src.domain.common.port import Repository
+from src.domain.common.type import BrokerType
 from src.infra.kis.account import KisRealAccount, KisVirtualAccount
 from src.infra.upbit.account import UpbitAccount
 

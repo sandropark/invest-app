@@ -1,11 +1,10 @@
 from dataclasses import dataclass
 from datetime import datetime
 from sqlalchemy import JSON, ForeignKey, TypeDecorator
+from src.domain.common.type import Market, TimeUnit
 from src.domain.strategy.stock_info import StockInfo
-from src.domain.type import Market, TimeUnit
-from src.infra.persistance.schemas.account import AccountEntity
 from src.infra.persistance.schemas.base import BaseEntity, EnumType
-from sqlalchemy.orm import Mapped, mapped_column, relationship
+from sqlalchemy.orm import Mapped, mapped_column
 from sqlalchemy.dialects import sqlite
 from typing import Dict, List
 
