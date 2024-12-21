@@ -45,7 +45,7 @@ def test_rebalance():
     # Then
     found_strategy = strategy_repo.find_by_id(1)
     assert found_strategy.stocks["spy"].rebalance_qty == 100
-    assert found_strategy.last_run is not None
+    assert found_strategy.last_run.date() == datetime.now().date()
     assert FakeAccount.balance == 0
 
 

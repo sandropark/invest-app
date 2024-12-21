@@ -51,15 +51,15 @@ class StrategyService:
 
         account: Account = self.account_provider.get_account(strategy.get_account_id())
 
-        # # 2. 포트폴리오 할당 금액 계산 (포트 폴리오 비중 * 잔고)
+        # 2. 포트폴리오 할당 금액 계산 (포트 폴리오 비중 * 잔고)
         invest_amount: float = strategy.get_invest_amount(account.get_balance())
 
-        # # 3. 보유 종목 리스트 조회
+        # 3. 보유 종목 리스트 조회
         holddings_dict: Dict[str, HoldingsInfo] = account.get_holdings()
 
         stocks: Dict[str, StockInfo] = strategy.get_stocks()
 
-        # # 4. 종목별 비중 계산
+        # 4. 종목별 비중 계산
         for ticker, stock in stocks.items():
             stock.calculate_rebalance_amt(
                 portfolio_target_amt=invest_amount,
