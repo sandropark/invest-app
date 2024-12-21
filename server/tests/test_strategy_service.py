@@ -4,7 +4,7 @@ from src.containers import Container
 from src.domain.account.account import Account
 from src.domain.account.account_provider import AccountProvider
 from src.domain.account.holdings import HoldingsInfo
-from src.domain.port import StockMarketClient, StrategyRepository, TimeHolder
+from src.domain.port import Repository, StockMarketClient, TimeHolder
 from src.domain.strategy.stock_info import StockInfo
 from src.domain.strategy.strategy import Strategy
 from src.domain.strategy.strategy_service import StrategyService
@@ -91,7 +91,7 @@ class FakeAccount(Account):
         return 100
 
 
-class FakeStrategyRepository(StrategyRepository):
+class FakeStrategyRepository(Repository[Strategy]):
     id_counter: int = 1
     strategies: List[Strategy] = []
 

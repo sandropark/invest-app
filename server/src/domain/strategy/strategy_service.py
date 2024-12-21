@@ -8,14 +8,12 @@ from src.domain.strategy.strategy import Strategy
 from src.infra.persistance.mapper import strategy_mapper
 from dependency_injector.wiring import inject
 
-from src.infra.persistance.schemas.strategy import StrategyEntity
-
 
 class StrategyService:
     @inject
     def __init__(
         self,
-        strategy_repo: StrategyRepository,
+        strategy_repo: Repository[Strategy],
         account_provider: AccountProvider,
         stock_market_client: StockMarketClient,
         time_holder: TimeHolder,

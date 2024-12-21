@@ -5,7 +5,7 @@ from src.rest.request_model import StrategyCreateReq
 
 router = APIRouter(prefix="/strategies", tags=["strategy"])
 
-container = Container()
+container = Container.get_instance()
 strategy_service: StrategyService = container.strategy_service()
 
 

@@ -58,7 +58,7 @@ class AccountCreateReq(BaseModel):
     token: Optional[str] = None
     broker_type: BrokerType
 
-    def toDomain(self) -> AccountEntity:
+    def to_domain(self) -> AccountEntity:
         return AccountEntity(
             name=self.name,
             number=self.number,

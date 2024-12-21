@@ -5,9 +5,8 @@ from pyupbit import Upbit
 from src.domain.account.account import Account
 from src.domain.account.dto import AccountDto
 from src.domain.account.holdings import HoldingsInfo
-from src.domain.exception import InvestAppException
+from src.domain.exception import ExeptionType, InvestAppException
 from src.domain.type import Market
-from src.infra.persistance.schemas.account import AccountEntity
 
 
 class UpbitAccount(Account):
@@ -41,7 +40,7 @@ class UpbitAccount(Account):
                 name=stock["currency"],
                 quantity=float(stock["balance"]),
                 avg_price=float(stock["avg_buy_price"]),
-                eval_amt=float(stock["balance"] * stock["avg_buy_price"]),
+                eval_amt=round(float(stock["balance"]) * float(stock["avg_buy_price"]), 4),
             )
             for stock in self._get_balances()
         }
@@ -50,9 +49,9 @@ class UpbitAccount(Account):
         return pyupbit.get_current_price(ticker)
 
     def _get_balances(self) -> list[dict]:
-        balances: dict = self.upbit.get_balances()
+        balances: dict | list = self.upbit.get_balances()
 
-        if "error" in balances.keys():
-            raise InvestAppException("error : {}", 500, balances.get("error"))
+        if isinstance(balances, dict) and "error" in balances.keys():
+            raise InvestAppException(ExeptionType.FAILED_TO_GET_BALANCE, balances.get("error"))
 
         return balances

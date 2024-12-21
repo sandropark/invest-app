@@ -1,29 +1,31 @@
 from fastapi import APIRouter
+from src.containers import Container
 from src.domain.account.account import Account
-from src.domain.account.account_provider import RealAccountProvider
 from src.infra.kis import token_refresher
-from src.infra.persistance.repo import account_repo
 from src.rest.request_model import AccountCreateReq
 
 
 router = APIRouter(prefix="/accounts", tags=["account"])
 
-account_provider = RealAccountProvider()
+
+container = Container.get_instance()
+account_repo = container.account_repository()
+account_provider = container.account_provider()
 
 
 @router.post("/", summary="계좌 생성")
 def save(req: AccountCreateReq):
-    return account_repo.save(req.toDomain())
+    return account_repo.save(req.to_domain())
+
+
+@router.put("/{id}", summary="계좌 수정")
+def update(id: int, req: AccountCreateReq):
+    return account_repo.update(id, req.to_domain())
 
 
 @router.get("/", summary="계좌 목록 조회")
 def find_all():
     return account_repo.find_all()
-
-
-@router.put("/{id}", summary="계좌 수정")
-def update(id: int, req: AccountCreateReq):
-    return account_repo.update(id, req.toDomain())
 
 
 @router.get("/{id}", summary="계좌 상세 조회")

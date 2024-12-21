@@ -1,7 +1,7 @@
 import json
 import requests
 from src.infra.kis.access_token import KisAccessToken
-from src.domain.exception import InvestAppException
+from src.domain.exception import ExeptionType, InvestAppException
 from src.infra.kis.dto import BalanceResponse, KisInfo
 import yfinance as yf
 
@@ -20,7 +20,7 @@ def get_token(info: KisInfo) -> KisAccessToken:
     res = requests.post(URL, headers=headers, data=json.dumps(body))
 
     if res.status_code != 200:
-        raise InvestAppException("토큰 생성 실패. {}", 500, res.text)
+        raise InvestAppException(ExeptionType.FAILED_TO_CREATE_TOKEN, res.text)
 
     return KisAccessToken.of(res.json())
 
@@ -69,7 +69,7 @@ def _get_balance_kr(info: KisInfo):
     if res.status_code == 200 and res.json()["rt_cd"] == "0":
         return res
 
-    raise InvestAppException("잔고 조회 실패. {}", 500, res.text)
+    raise InvestAppException(ExeptionType.FAILED_TO_GET_BALANCE, res.text)
 
 
 def _get_balance_us(info: KisInfo):
@@ -231,7 +231,7 @@ def _get_balance_us(info: KisInfo):
 
         # return balanceDict
 
-    raise InvestAppException("잔고 조회 실패. {}", 500, res.text)
+    raise InvestAppException(ExeptionType.FAILED_TO_GET_BALANCE, res.text)
 
 
 def get_current_price(info: KisInfo, ticker: str) -> float:
@@ -259,7 +259,7 @@ def _get_current_price_kr(info: KisInfo, ticker: str) -> float:
     if res.status_code == 200 and res.json()["rt_cd"] == "0":
         return int(res.json()["output"]["stck_prpr"])
 
-    raise InvestAppException("현재가 조회 실패. {}", 500, res.text)
+    raise InvestAppException(ExeptionType.FAILED_TO_GET_CURRENT_PRICE, res.text)
 
 
 def _get_current_price_us(ticker: str) -> float:
