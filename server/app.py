@@ -1,4 +1,4 @@
-from src.domain.config.logging_config import logger
+from src.domain.config import logger
 from fastapi import FastAPI, Request
 from src.rest import strategy, account
 from fastapi.responses import JSONResponse

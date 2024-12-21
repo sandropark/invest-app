@@ -1,13 +1,11 @@
 from src.domain.account.account import HoldingsInfo
-from src.domain.stock.stock_info import StockInfo
+from src.domain.strategy.stock_info import StockInfo
 
 
 # 해당 종목을 보유하지 않은 경우
 def test_calculate_rebalance_amount_with_no_holdings():
     stock = StockInfo(target_rate=0.5)
-    stock.calculate_rebalance_amt(
-        portfolio_target_amt=100_000, holdings=None, current_price=10_000
-    )
+    stock.calculate_rebalance_amt(portfolio_target_amt=100_000, holdings=None, current_price=10_000)
     assert stock.rebalance_qty == 5
 
 
@@ -45,6 +43,4 @@ def test_calculate_rebalance_amount_with_holdings_and_diff_and_negative():
 
 
 def _create_holdings(eval_amt: int, quantity: int = 10):
-    return HoldingsInfo(
-        name="test", quantity=quantity, avg_price=10_000, eval_amt=eval_amt
-    )
+    return HoldingsInfo(name="test", quantity=quantity, avg_price=10_000, eval_amt=eval_amt)

@@ -24,7 +24,7 @@ import time
 import json
 import pprint
 
-from domain import chat_client
+from src.infra import chat_client
 
 ############################
 # 통합 증거금 계좌 사용시 예입니다 #
@@ -101,17 +101,13 @@ if is_market_open == True:
 
     # 영상엔 없지만 리밸런싱이 가능할때만 내게 메시지를 보내자!
     if is_rebalance_go == True:
-        chat_client.send_message(
-            portfolio_name + " (" + strYM + ") 장이 열려서 포트폴리오 리밸런싱 가능!!"
-        )
+        chat_client.send_message(portfolio_name + " (" + strYM + ") 장이 열려서 포트폴리오 리밸런싱 가능!!")
 else:
     print("Market Is Close!!!!!!!!!!!")
 
     # 영상엔 없지만 리밸런싱이 가능할때만 내게 메시지를 보내자!
     if is_rebalance_go == True:
-        chat_client.send_message(
-            portfolio_name + " (" + strYM + ") 장이 닫혀서 포트폴리오 리밸런싱 불가능!!"
-        )
+        chat_client.send_message(portfolio_name + " (" + strYM + ") 장이 닫혀서 포트폴리오 리밸런싱 불가능!!")
 
 
 #####################################################################################################################################
@@ -464,9 +460,7 @@ if is_rebalance_go == True and is_market_open == True:
 
             # 현재가보다 아래에 매도 주문을 넣음으로써 시장가로 매도
             current_price *= 0.9
-            pprint.pprint(
-                KisUS.MakeSellLimitOrder(stock_code, abs(rebalance_amt), current_price)
-            )
+            pprint.pprint(KisUS.MakeSellLimitOrder(stock_code, abs(rebalance_amt), current_price))
 
     print("--------------------------------------------")
 
@@ -489,9 +483,7 @@ if is_rebalance_go == True and is_market_open == True:
 
             # 현재가보다 위에 매수 주문을 넣음으로써 시장가로 매수
             current_price *= 1.1
-            pprint.pprint(
-                KisUS.MakeBuyLimitOrder(stock_code, rebalance_amt, current_price)
-            )
+            pprint.pprint(KisUS.MakeBuyLimitOrder(stock_code, rebalance_amt, current_price))
 
     print("--------------------------------------------")
 

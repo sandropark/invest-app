@@ -1,7 +1,7 @@
 from dataclasses import dataclass
 from datetime import datetime
 from sqlalchemy import JSON, ForeignKey, TypeDecorator
-from src.domain.stock.stock_info import StockInfo
+from src.domain.strategy.stock_info import StockInfo
 from src.domain.type import Market, TimeUnit
 from src.infra.persistance.schemas.account import AccountEntity
 from src.infra.persistance.schemas.base import BaseEntity, EnumType
@@ -62,4 +62,3 @@ class StrategyEntity(BaseEntity):
     interval: Mapped[Interval] = mapped_column(IntervalType)
     last_run: Mapped[datetime] = mapped_column(sqlite.DATETIME, nullable=True)
     account_id: Mapped[int] = mapped_column(ForeignKey("account.id"))
-    account: Mapped[AccountEntity] = relationship()

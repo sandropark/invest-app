@@ -1,67 +1,52 @@
 from typing import List
-from contextlib import contextmanager
+
+from sqlalchemy import delete, select, update
+from src.domain.account.dto import AccountDto
 from src.domain.type import BrokerType
 from src.infra.persistance import engine
+from src.infra.persistance.mapper import account_mapper
 from src.infra.persistance.schemas.account import AccountEntity
 
 
-@contextmanager
-def get_db():
-    db = engine.SessionLocal()
-    try:
-        yield db
-    finally:
-        db.close()
-
-
-def save(account: AccountEntity) -> AccountEntity:
-    with get_db() as db:
-        db.add(account)
-        db.commit()
-        db.refresh(account)
+def save(account: AccountDto) -> AccountDto:
+    with engine.get_session() as session:
+        session.add(account)
+        session.commit()
         return account
 
 
-def save_all(accounts: List[AccountEntity]) -> List[AccountEntity]:
-    with get_db() as db:
-        db.add_all(accounts)
-        db.commit()
-        return accounts
+def save_all(accounts_dtos: List[AccountDto]) -> List[AccountDto]:
+    with engine.get_session() as session:
+        [session.merge(account_mapper.to_entity(account_dto)) for account_dto in accounts_dtos]
+        session.commit()
+        return accounts_dtos
 
 
-def find_all(broker_type: BrokerType = None) -> List[AccountEntity]:
-    with get_db() as db:
-        if broker_type is None:
-            return db.query(AccountEntity).all()
-        return (
-            db.query(AccountEntity)
-            .filter(AccountEntity.broker_type == broker_type)
-            .all()
-        )
+def find_all(broker_type: BrokerType = None) -> List[AccountDto]:
+    with engine.get_session() as session:
+        stmt = select(AccountEntity)
+        if broker_type is not None:
+            stmt = stmt.where(AccountEntity.broker_type == broker_type)
+        return [account_mapper.to_dto(account_entity) for account_entity in session.scalars(stmt).all()]
 
 
-def update(id: int, account: AccountEntity) -> AccountEntity:
-    with get_db() as db:
-        update_data = {
-            key: value
-            for key, value in account.__dict__.items()
-            if not key.startswith("_") and key != "id"
-        }
-
-        db.query(AccountEntity).filter(AccountEntity.id == id).update(update_data)
-        db.commit()
-
-        return db.query(AccountEntity).get(id)
-
-
-def get(id: int) -> AccountEntity:
-    with get_db() as db:
-        account = db.get(AccountEntity, id)
-        assert account is not None, f"계좌가 존재하지 않습니다. id={id}"
+def update(id: int, account: AccountDto) -> AccountDto:
+    with engine.get_session() as session:
+        stmt = update(AccountEntity).where(AccountEntity.id == id).values(account.__dict__)
+        session.execute(stmt)
+        session.commit()
         return account
 
 
-def delete(id: int):
-    with get_db() as db:
-        db.query(AccountEntity).filter(AccountEntity.id == id).delete()
-        db.commit()
+def find_by_id(id: int) -> AccountDto:
+    with engine.get_session() as session:
+        account_entity = session.get(AccountEntity, id)
+        return account_mapper.to_dto(account_entity)
+
+
+def delete_by_id(id: int):
+    with engine.get_session() as session:
+        stmt = delete(AccountEntity).where(AccountEntity.id == id)
+        session.execute(stmt)
+        session.commit()
+        return id

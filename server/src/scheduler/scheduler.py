@@ -1,7 +1,7 @@
 from contextlib import asynccontextmanager
 from apscheduler.schedulers.background import BackgroundScheduler
 
-from src.domain.account import account_service
+from src.infra.kis import token_refresher
 
 
 scheduler = BackgroundScheduler()
@@ -9,8 +9,8 @@ scheduler = BackgroundScheduler()
 
 @asynccontextmanager
 async def lifespan(app):
-    account_service.refresh_kis_token()
-    scheduler.add_job(account_service.refresh_kis_token, "interval", hours=12)
+    token_refresher.refresh_kis_token()
+    scheduler.add_job(token_refresher.refresh_kis_token, "interval", hours=12)
     scheduler.start()
     yield
     scheduler.shutdown()

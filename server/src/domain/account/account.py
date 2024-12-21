@@ -1,13 +1,13 @@
 from abc import ABC, abstractmethod
 
+from src.domain.account.dto import AccountDto
 from src.domain.account.holdings import HoldingsInfo
-from src.infra.persistance.schemas.account import AccountEntity
 from src.domain.type import Market
 
 
 class Account(ABC):
-    def __init__(self, account: AccountEntity):
-        self.account = account
+    def __init__(self, account_dto: AccountDto):
+        self.account_dto: AccountDto = account_dto
 
     @abstractmethod
     def get_balance(self, market: Market = Market.KR) -> float:
